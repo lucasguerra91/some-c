@@ -11,7 +11,7 @@ void pruebas_pila_catedra();
 int main(void)
 {
     /* Ejecuta todas las pruebas unitarias. */
-    printf("~~~ PRUEBAS ALUMNO ~~~\n");
+    printf("\n\t\t~~~ PRUEBAS ALUMNO ~~~\n");
     pruebas_pila_alumno();
 
     #ifdef CORRECTOR

@@ -1,5 +1,13 @@
 #include "tp0.h"
 
+// Funcion aux
+
+int minimo (int a, int b){
+    return a > b ? b : a;
+}
+
+//
+
 
 void swap (int *x, int *y) {
     /******************************************************************
@@ -35,34 +43,25 @@ int maximo(int vector[], int n) {
 
 int comparar(int vector1[], int n1, int vector2[], int n2) {
 
-    // Si los dos están vacíos, son iguales
-    if (n1 == 0 && n2 == 0){
-        return 0;
-    }
-
-
-    int limite, limite_menor;
-
-    limite = n1 > n2 ? n1 : n2 ;
-    limite_menor = limite == n1 ? n2 : n1;
+    int limite = n1 > n2 ? n1 :n2;
 
     for (int i = 0; i < limite ; i++) {
 
-        if (i < limite_menor){
+            if (n1 <= i && n2 > i){
+                return -1;
+            }
+
+            if (n1 > i && n2 <= i){
+                return 1;
+            }
 
             if (vector1[i] > vector2[i]){
                 return 1;
             }
 
-            if (vector1[i] < vector2[i]){
+            if (vector1[i] < vector2[i]) {
                 return -1;
             }
-
-            continue;
-
-        } else{
-            return n1 == limite ? 1 : -1 ;
-        }
     }
 
     // Fueron iguales hasta lo ultimo
@@ -87,4 +86,5 @@ void seleccion(int vector[], int n) {
     }
 
 }
+
 
