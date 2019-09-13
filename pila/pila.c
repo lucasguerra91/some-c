@@ -1,5 +1,4 @@
 #include "pila.h"
-#include <stdlib.h>
 
 #define CAP_MIN 1
 
@@ -32,7 +31,7 @@ pila_t* pila_crear(void){
 void pila_destruir(pila_t *pila){
 
     if (pila){
-       free(pila->datos);
+       free(pila->datos); // libero primero la memoria del array
        free(pila);
    }
 }
@@ -60,7 +59,9 @@ bool pila_apilar(pila_t *pila, void* valor){
     // Agrego el valor y actualizo la cantidad actual
 
     pila->datos[pila->cantidad] = valor;
-    pila->cantidad ++;
+    pila->cantidad++;
+
+    //printf("\nSe apilo %p\n", valor);
     return true;
 }
 
@@ -70,8 +71,56 @@ void* pila_ver_tope(const pila_t *pila){
     // Si no existe la pila, o esta vacía (recién creada o vaciada) retorno NULL
     if (!pila || pila->cantidad == 0) return NULL;
 
-    void* valor = pila->datos[pila->cantidad];
-    return valor;
+    void *tope = pila->datos[pila->cantidad - 1];
+    return tope;
 
+}
+
+
+void* pila_desapilar(pila_t *pila){
+
+    if (!pila || pila->cantidad == 0) return NULL;
+
+    // Si la cantidad de elementos es menor a la mitad de la capacidad, realloc a 3/4 de la capacidad
+    if (pila->cantidad < (pila->capacidad / 2)){
+
+        pila->capacidad =  (pila->capacidad * 3) / 4;
+
+        void* temporal = realloc(pila->datos, pila->capacidad * sizeof(void *));
+        if (temporal == NULL) return false;
+
+        pila->datos = temporal;
+
+    }
+
+    pila->cantidad--;
+    void* valor = pila->datos[pila->cantidad];
+    return valor ;
+
+}
+
+
+}
+
+
+
+/* *****************************************************************
+ *                    FUNCIONES ADICIONALES
+ * *****************************************************************/
+
+size_t pila_ver_cantidad(pila_t *pila){
+    //printf("\nCantidad actual : %zu \n Pila actual:", pila->cantidad);
+    return pila->cantidad;
+}
+
+size_t pila_ver_capacidad(pila_t *pila){
+    //printf("\nCantidad actual : %zu \n Pila actual:", pila->cantidad);
+    return pila->capacidad;
+}
+
+void pila_imprimir(pila_t *pila){
+    for (int i = 0; i < pila->cantidad ; ++i) {
+        printf("\t\n %u", *(int *)pila->datos[i]);
+    }
 }
 
