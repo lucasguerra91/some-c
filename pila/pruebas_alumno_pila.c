@@ -85,5 +85,5 @@ void pruebas_pila_alumno() {
     // ojo con no liberar la pila, ja
     pila_destruir(ejemplo);
 
-    
+
 }
