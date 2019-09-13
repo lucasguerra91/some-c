@@ -31,7 +31,7 @@ pila_t* pila_crear(void){
 void pila_destruir(pila_t *pila){
 
     if (pila){
-       free(pila->datos);
+       free(pila->datos); // libero primero la memoria del array
        free(pila);
    }
 }
@@ -60,6 +60,7 @@ bool pila_apilar(pila_t *pila, void* valor){
 
     pila->datos[pila->cantidad] = valor;
     pila->cantidad++;
+
     //printf("\nSe apilo %p\n", valor);
     return true;
 }
@@ -70,8 +71,6 @@ void* pila_ver_tope(const pila_t *pila){
     // Si no existe la pila, o esta vacía (recién creada o vaciada) retorno NULL
     if (!pila || pila->cantidad == 0) return NULL;
 
-//    void* valor = pila->datos[(pila->cantidad)-1];
-//    return valor;
     void *tope = pila->datos[pila->cantidad - 1];
     return tope;
 
@@ -82,12 +81,10 @@ void* pila_desapilar(pila_t *pila){
 
     if (!pila || pila->cantidad == 0) return NULL;
 
-    pila->cantidad--;
-    void* valor = pila->datos[pila->cantidad];
-
+    // Si la cantidad de elementos es menor a la mitad de la capacidad, realloc a 3/4 de la capacidad
     if (pila->cantidad < (pila->capacidad / 2)){
 
-        pila->capacidad =  (pila->capacidad * 4) / 3;
+        pila->capacidad =  (pila->capacidad * 3) / 4;
 
         void* temporal = realloc(pila->datos, pila->capacidad * sizeof(void *));
         if (temporal == NULL) return false;
@@ -96,7 +93,8 @@ void* pila_desapilar(pila_t *pila){
 
     }
 
-    //printf("\nSe desapilo %p\n", valor);
+    pila->cantidad--;
+    void* valor = pila->datos[pila->cantidad];
     return valor ;
 
 }

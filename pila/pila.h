@@ -54,9 +54,21 @@ void* pila_ver_tope(const pila_t *pila);
 // y la pila contiene un elemento menos.
 void* pila_desapilar(pila_t *pila);
 
+
+
+/* *****************************************************************
+ *                    FUNCIONES ADICIONALES
+ * *****************************************************************/
+
+// Devuelve la cantidad actual de elementos en la pila
 size_t pila_ver_cantidad(pila_t *pila);
+
+// Devuelve la capacidad actual de la pila
 size_t pila_ver_capacidad(pila_t *pila);
+
+// Imprime todos los elementos de la pila
 void pila_imprimir(pila_t *pila);
+
 
 /* *****************************************************************
  *                    PRUEBAS PARA LA PILA

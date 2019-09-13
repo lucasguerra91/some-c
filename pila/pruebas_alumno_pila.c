@@ -54,6 +54,9 @@ void pruebas_pila_alumno() {
         pila_apilar(ejemplo, &vector[i]);
     }
 
+    size_t cantidad = pila_ver_cantidad(ejemplo);
+    printf("Cantidad actual : %d", (int)cantidad);
+
 
     print_test("El nuevo tope de la pila es 1000 ", *((int *)pila_ver_tope(ejemplo)) == 1000);
 
@@ -75,29 +78,12 @@ void pruebas_pila_alumno() {
     print_test("Consulta si esta vacia = TRUE ", pila_esta_vacia(ejemplo) == true);
 
 
-//    printf("\nTope antes de desapilar= %u\n", *((int *)pila_ver_tope(ejemplo)));
-//    void * aux1 = pila_desapilar(ejemplo);
-//    printf("Se desapiló %u", *(int *)aux1);
-//    printf("\nTope = %u\n", *((int *)pila_ver_tope(ejemplo)));
-//
-//    printf("\nTope antes de desapilar= %u\n", *((int *)pila_ver_tope(ejemplo)));
-//    void * aux2 = pila_desapilar(ejemplo);
-//    printf("Se desapiló %u", *(int *)aux2);
-//    printf("\nTope = %u\n", *((int *)pila_ver_tope(ejemplo)));
-//
-//    size_t cantidad = pila_ver_cantidad(ejemplo);
-//    printf("Cantidad actual : %d", (int)cantidad);
-//
-//    printf("\nTope antes de desapilar= %u\n", *((int *)pila_ver_tope(ejemplo)));
-//    void * aux3 = pila_desapilar(ejemplo);
-//    printf("Se desapiló %u", *(int *)aux3);
-//    printf("\nTope = %u\n", *((int *)pila_ver_tope(ejemplo)));
-//
-//    size_t cantidad2 = pila_ver_cantidad(ejemplo);
-//    printf("Cantidad actual : %d", (int)cantidad2);
+    size_t cantidad2 = pila_ver_cantidad(ejemplo);
+    printf("Cantidad actual : %d", (int)cantidad2);
 
-    //print_test("El nuevo tope de la pila es NULL / No se permite ", pila_ver_tope(ejemplo) == NULL);
 
+    // ojo con no liberar la pila, ja
     pila_destruir(ejemplo);
-    //print_test("Destruye una pila", pila1 != *void);
+
+    
 }
