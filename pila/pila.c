@@ -23,6 +23,8 @@ pila_t* pila_crear(void){
     pila_t *pila = malloc(sizeof(pila_t));
     pila->datos = malloc(CAP_MIN * sizeof(void *));
 
+    if (pila == NULL || pila->datos == NULL) return NULL;
+
     pila->cantidad = 0;
     pila->capacidad = CAP_MIN;
 
@@ -40,7 +42,7 @@ void pila_destruir(pila_t *pila){
 
 
 bool pila_esta_vacia(const pila_t *pila){
-    return pila->cantidad == 0 ? true : false;
+    return pila->cantidad == 0;
 }
 
 
@@ -84,9 +86,9 @@ void* pila_desapilar(pila_t *pila){
     if (!pila || pila->cantidad == 0) return NULL;
 
     // Si la cantidad de elementos es menor a la mitad de la capacidad, realloc a 3/4 de la capacidad
-    if (pila->cantidad < (pila->capacidad / 2)){
+    if (pila->cantidad < (pila->capacidad / 4)){
 
-        pila->capacidad =  (pila->capacidad * 3) / 4;
+        pila->capacidad =  (pila->capacidad /2) ;
 
         void* temporal = realloc(pila->datos, pila->capacidad * sizeof(void *));
         if (temporal == NULL) return false;
