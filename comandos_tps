@@ -4,8 +4,5 @@ gcc -g -std=c99 -Wall -Wconversion -Wtype-limits -pedantic -Werror -o pruebas *.
 
 
 para correrlo con valgrind
-<<<<<<< HEAD
-    $ valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./pruebas
-=======
 valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./pruebas
->>>>>>> 571aeddbaaaa846c815efc50dc40e985c3146b94
+
