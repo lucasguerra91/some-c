@@ -19,6 +19,6 @@ void pruebas_lista_alumno() {
 
         lista_t* lista_ej = lista_crear();
         print_test("Lista esta vacia? ", lista_esta_vacia(lista_ej) == true);
-
+        print_test("Largo de la lista? ", lista_largo(lista_ej) == 0);
         free(lista_ej);
 }

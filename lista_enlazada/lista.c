@@ -45,16 +45,16 @@ void mostrar_nodo(nodo_t* nodo){
  *                    PRIMITIVAS DE LA LISTA
  * *****************************************************************/
 
-//size_t lista_largo(lista_t* lista){
-//    size_t largo = 0;
-//    nodo_t* actual = lista->prim;
-//    while (actual) {
-//        actual = actual->siguiente;
-//        largo++;
-//    }
-//    return largo;
-//}
-//
+size_t lista_largo(lista_t* lista){
+    size_t largo = 0;
+    nodo_t* actual = lista->prim;
+    while (actual) {
+        actual = actual->siguiente;
+        largo++;
+    }
+    return largo;
+}
+
 lista_t* lista_crear(void){
 
     lista_t *lista = malloc(sizeof(lista_t));
