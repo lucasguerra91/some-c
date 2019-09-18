@@ -1,4 +1,6 @@
 #include "pila.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 #define CAP_MIN 1
 
@@ -94,11 +96,13 @@ void* pila_desapilar(pila_t *pila){
     }
 
     pila->cantidad--;
+
+    if (pila->cantidad == 0){
+        pila->capacidad = CAP_MIN;
+    }
+
     void* valor = pila->datos[pila->cantidad];
     return valor ;
-
-}
-
 
 }
 
@@ -107,17 +111,18 @@ void* pila_desapilar(pila_t *pila){
 /* *****************************************************************
  *                    FUNCIONES ADICIONALES
  * *****************************************************************/
-
+// Devuelve la cantidad actual de elementos en la pila
 size_t pila_ver_cantidad(pila_t *pila){
-    //printf("\nCantidad actual : %zu \n Pila actual:", pila->cantidad);
     return pila->cantidad;
 }
 
+// Devuelve la capacidad actual de la pila
 size_t pila_ver_capacidad(pila_t *pila){
     //printf("\nCantidad actual : %zu \n Pila actual:", pila->cantidad);
     return pila->capacidad;
 }
 
+// Imprime todos los elementos de la pila
 void pila_imprimir(pila_t *pila){
     for (int i = 0; i < pila->cantidad ; ++i) {
         printf("\t\n %u", *(int *)pila->datos[i]);
