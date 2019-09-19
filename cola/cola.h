@@ -2,6 +2,7 @@
 #define COLA_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 
 /* ******************************************************************
@@ -13,6 +14,8 @@
 struct cola;
 typedef struct cola cola_t;
 
+//struct nodo;
+//typedef struct nodo nodo_t;
 
 /* ******************************************************************
  *                    PRIMITIVAS DE LA COLA
