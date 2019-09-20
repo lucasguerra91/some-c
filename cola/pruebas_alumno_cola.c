@@ -58,5 +58,10 @@ void pruebas_cola_alumno() {
         print_test("\nCola esta vacía? ", cola_esta_vacia(cola_ej) == true); // Estado = vacia
 
         print_test("Desencolar vacía = NULL", cola_desencolar(cola_ej) == NULL); // No se puede
-        free(cola_ej);
+
+        //print_test("Destruir cola (NULL)", cola_destruir(cola_ej, &free) == true);
+        cola_destruir(cola_ej, NULL);
+
+        print_test("\nCola existe? ", (cola_ej == NULL) == true); // Estado = no existe
+        //print_test("Desencolar vacía = NULL", cola_desencolar(cola_ej) == NULL); // No se puede
 }

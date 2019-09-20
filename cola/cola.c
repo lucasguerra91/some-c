@@ -55,6 +55,7 @@ cola_t* cola_crear(void){
 bool cola_esta_vacia(const cola_t *cola){
 
     if (!cola) return false;
+
     return  cola->prim == NULL ;
 }
 
@@ -102,3 +103,23 @@ void* cola_desencolar(cola_t *cola){
 
     return primero;
 }
+
+
+void cola_destruir(cola_t *cola, void destruir_dato(void*)){
+    //if (!cola || cola->prim == NULL) return;
+
+    if (destruir_dato == NULL){
+            printf("\nEntro al if de NULL");
+//            free(cola->prim);
+//            free(cola->ult);
+            free(cola);
+            cola = NULL;
+            return;
+        }
+
+
+}
+
+//bool cola_existe(cola_t cola){
+//    return (cola);
+//}

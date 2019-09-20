@@ -55,6 +55,8 @@ void* cola_ver_primero(const cola_t *cola);
 // contiene un elemento menos, si la cola no estaba vacía.
 void* cola_desencolar(cola_t *cola);
 
+// Verifica si la cola existe
+bool cola_existe(cola_t cola);
 
 /* *****************************************************************
  *                      PRUEBAS UNITARIAS
