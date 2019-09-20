@@ -1,5 +1,6 @@
 #include "cola.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 
 /* ******************************************************************
@@ -25,8 +26,8 @@ struct cola{
 
 nodo_t* nodo_crear(void* valor){
 
-    nodo_t *nodo = malloc(sizeof(nodo_t));
-    if (!nodo) return NULL;
+    nodo_t *nodo = (nodo_t *)malloc(sizeof(nodo_t));
+    if (nodo == NULL) return NULL;
 
     nodo->dato = valor;
     nodo->siguiente = NULL;
@@ -65,7 +66,6 @@ bool cola_encolar(cola_t *cola, void* valor){
     if (!cola) return false;
 
     nodo_t *nodo = nodo_crear(valor);
-    if (nodo == NULL) return false;
 
     if (cola_esta_vacia(cola)){
         cola->prim = nodo;
@@ -81,7 +81,7 @@ bool cola_encolar(cola_t *cola, void* valor){
 
 void* cola_ver_primero(const cola_t *cola){
 
-    if (!cola || cola->prim == NULL) return NULL;
+    if (!cola || cola_esta_vacia(cola)) return NULL;
     void *primero = cola->prim->dato;
 
     return primero;
@@ -91,21 +91,24 @@ void* cola_ver_primero(const cola_t *cola){
 
 void* cola_desencolar(cola_t *cola){
 
-    if (!cola || cola->prim == NULL) return NULL;
+    if (!cola || cola_esta_vacia(cola)) return NULL;
 
     void *primero = cola->prim->dato; // Capturo el valor del primero
+    nodo_t *temp = cola->prim; // Apunto al nodo que está primero en este instante
 
     if (cola->prim == cola->ult){ // Si es el único, prim=ult=NULL
         cola->prim = cola->ult = NULL;
-    } else{
+    } else{     // Sino, lo actualizo
         cola->prim = cola->prim->siguiente;
     }
 
+    free(temp); // Libero el nodo que estuvo primero
     return primero;
 }
 
 
 void cola_destruir(cola_t *cola, void destruir_dato(void*)){
+
     //if (!cola || cola->prim == NULL) return;
 
     if (destruir_dato == NULL){
@@ -123,3 +126,17 @@ void cola_destruir(cola_t *cola, void destruir_dato(void*)){
 //bool cola_existe(cola_t cola){
 //    return (cola);
 //}
+
+
+    if (!cola || destruir_dato == NULL) return;
+
+    while (cola->prim != NULL){
+        nodo_t* temp = cola->prim;
+        cola->prim = cola->prim->siguiente;
+        destruir_dato(temp->dato);
+
+
+    }
+    free(cola);
+}
+
