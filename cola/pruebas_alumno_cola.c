@@ -60,6 +60,12 @@ void encolar_pilas(cola_t* cola, pila_t* pila, int cant){
     }
 }
 
+void desencolar_pilas(cola_t* cola, int cant){
+    for (int i = 0; i < cant ; i++) {
+        print_test("Desencolar ", cola_ver_primero(cola) == cola_desencolar(cola));
+    }
+}
+
 void mi_free(void* elemento){
     free(elemento);
 }
@@ -71,94 +77,84 @@ void mi_free(void* elemento){
 
 void pruebas_cola_alumno() {
 
-        cola_t* cola_ej = cola_crear(); // Creación de la cola
+    cola_t* cola_ej = cola_crear(); // Creación de la cola
 
-        verificar_vacia(cola_ej);
+    verificar_vacia(cola_ej);
 
-        int numero = 10;    // Encolar con cola vacía
-        print_test("Encolar en cola vacía ", cola_encolar(cola_ej, &numero) == true);
-        print_test("Verificar que primero sea 10 ", *((int *)cola_ver_primero(cola_ej)) == 10);
+    int numero = 10;    // Encolar con cola vacía
+    print_test("Encolar en cola vacía ", cola_encolar(cola_ej, &numero) == true);
+    print_test("Verificar que primero sea 10 ", *((int *)cola_ver_primero(cola_ej)) == 10);
 
-        encolar_array_enteros(cola_ej, 10); // Encolar n enteros
-        print_test("\nVerificar que primero sea 10 ", *((int *)cola_ver_primero(cola_ej)) == 10);
+    encolar_array_enteros(cola_ej, 10); // Encolar n enteros
+    print_test("\nVerificar que primero sea 10 ", *((int *)cola_ver_primero(cola_ej)) == 10);
 
-        print_test("Desencolar el primero ", *((int *)cola_desencolar(cola_ej)) == 10);
+    print_test("Desencolar el primero ", *((int *)cola_desencolar(cola_ej)) == 10);
 
-        desencolar_elementos(cola_ej, 10); // Desencolar hasta lo ultimo
-        print_test("\nCola esta vacía? ", cola_esta_vacia(cola_ej) == true); // Estado = vacia
-        print_test("Desencolar vacía = NULL", cola_desencolar(cola_ej) == NULL); // No se puede
-<<<<<<< HEAD
+    desencolar_elementos(cola_ej, 10); // Desencolar hasta lo ultimo
+    print_test("\nCola esta vacía? ", cola_esta_vacia(cola_ej) == true); // Estado = vacia
+    print_test("Desencolar vacía = NULL", cola_desencolar(cola_ej) == NULL); // No se puede
+    print_test("Encolar en cola vacía ", cola_encolar(cola_ej, &numero) == true);
 
-        //print_test("Destruir cola (NULL)", cola_destruir(cola_ej, &free) == true);
-        cola_destruir(cola_ej, NULL);
-
-        print_test("\nCola existe? ", (cola_ej == NULL) == true); // Estado = no existe
-        //print_test("Desencolar vacía = NULL", cola_desencolar(cola_ej) == NULL); // No se puede
-}
-=======
-        print_test("Encolar en cola vacía ", cola_encolar(cola_ej, &numero) == true);
-
-        encolar_array_enteros(cola_ej, 10); // Encolar n enteros
-        desencolar_elementos(cola_ej, 5); // Desencolar hasta lo ultimo
-        encolar_array_enteros(cola_ej, 1); // Encolar n enteros
-        desencolar_elementos(cola_ej, 15); // Desencolar hasta lo ultimo
-        //Se destruye la cola actual
-        cola_destruir(cola_ej, free);
+    encolar_array_enteros(cola_ej, 10); // Encolar n enteros
+    desencolar_elementos(cola_ej, 5); // Desencolar hasta lo ultimo
+    encolar_array_enteros(cola_ej, 1); // Encolar n enteros
+    desencolar_elementos(cola_ej, 15); // Desencolar hasta lo ultimo
+    //Se destruye la cola actual
+    cola_destruir(cola_ej, free);
 
 
-        cola_t* cola_ej2 = cola_crear(); // Creación de la cola
+    cola_t* cola_ej2 = cola_crear(); // Creación de la cola
 
-        verificar_vacia(cola_ej2);
+    verificar_vacia(cola_ej2);
 
-        int numero2 = 10;    // Encolar con cola vacía
-        print_test("Encolar en cola vacía ", cola_encolar(cola_ej2, &numero2) == true);
-        print_test("Verificar que primero sea 10 ", *((int *)cola_ver_primero(cola_ej2)) == 10);
+    int numero2 = 10;    // Encolar con cola vacía
+    print_test("Encolar en cola vacía ", cola_encolar(cola_ej2, &numero2) == true);
+    print_test("Verificar que primero sea 10 ", *((int *)cola_ver_primero(cola_ej2)) == 10);
 
-        encolar_array_enteros(cola_ej2, 10); // Encolar n enteros
-        print_test("\nVerificar que primero sea 10 ", *((int *)cola_ver_primero(cola_ej2)) == 10);
+    encolar_array_enteros(cola_ej2, 10); // Encolar n enteros
+    print_test("\nVerificar que primero sea 10 ", *((int *)cola_ver_primero(cola_ej2)) == 10);
 
-        print_test("Desencolar el primero ", *((int *)cola_desencolar(cola_ej2)) == 10);
+    print_test("Desencolar el primero ", *((int *)cola_desencolar(cola_ej2)) == 10);
 
-        desencolar_elementos(cola_ej2, 10); // Desencolar hasta lo ultimo
-        print_test("\nCola esta vacía? ", cola_esta_vacia(cola_ej2)== true); // Estado = vacia
-        print_test("Desencolar vacía = NULL", cola_desencolar(cola_ej2) == NULL); // No se puede
-        print_test("Encolar en cola vacía ", cola_encolar(cola_ej2, &numero2) == true);
+    desencolar_elementos(cola_ej2, 10); // Desencolar hasta lo ultimo
+    print_test("\nCola esta vacía? ", cola_esta_vacia(cola_ej2)== true); // Estado = vacia
+    print_test("Desencolar vacía = NULL", cola_desencolar(cola_ej2) == NULL); // No se puede
+    print_test("Encolar en cola vacía ", cola_encolar(cola_ej2, &numero2) == true);
 
-        encolar_array_enteros(cola_ej2, 10); // Encolar n enteros
-        desencolar_elementos(cola_ej2, 5); // Desencolar hasta lo ultimo
-        encolar_array_enteros(cola_ej2, 1); // Encolar n enteros
-        desencolar_elementos(cola_ej2, 15); // Desencolar hasta lo ultimo
-        //Se destruye la cola actual
-        cola_destruir(cola_ej2, mi_free);
+
+
+    encolar_array_enteros(cola_ej2, 10); // Encolar n enteros
+    desencolar_elementos(cola_ej2, 5); // Desencolar hasta lo ultimo
+
+    encolar_array_enteros(cola_ej2, 1); // Encolar n enteros
+    desencolar_elementos(cola_ej2, 15); // Desencolar hasta lo ultimo
+    print_test("\nCola esta vacía? ", cola_esta_vacia(cola_ej2)== true); // Estado = vacia
+
+    encolar_array_enteros(cola_ej2, 100); // Encolar n enteros
+
+    //Se destruye la cola actual
+    cola_destruir(cola_ej2, NULL);
 
 
 /* ******************************************************************
  *                   CARGA DE PILA
  * *****************************************************************/
 
-        pila_t* pila = pila_crear();
-        cargar_pila(pila, 5);
+    pila_t* pila = pila_crear();
+    cargar_pila(pila, 5);
 
-        cola_t* cola_ej3 = cola_crear();
-        print_test("\nEncolar pila en cola vacía ", cola_encolar(cola_ej3, pila) == true);
+    cola_t* cola_ej3 = cola_crear();
+    print_test("\nEncolar pila en cola vacía ", cola_encolar(cola_ej3, pila) == true);
 
-        print_test("Encolar pila ", cola_encolar(cola_ej3, pila) == true);
-        print_test("Encolar pila ", cola_encolar(cola_ej3, pila) == true);
-        print_test("Encolar pila ", cola_encolar(cola_ej3, pila) == true);
-        encolar_pilas(cola_ej3, pila, 10);
-//        print_test("\nVerificar que primero sea una pila ", cola_ver_primero(cola_ej3) == pila);
-        print_test("Desencolar ", cola_ver_primero(cola_ej3) == cola_desencolar(cola_ej3));
-        print_test("Desencolar ", cola_ver_primero(cola_ej3) == cola_desencolar(cola_ej3));
-        print_test("Desencolar ", cola_ver_primero(cola_ej3) == cola_desencolar(cola_ej3));
+    encolar_pilas(cola_ej3, pila, 30);
 
-        //Se destruye la cola de pilas con el wrapper
-        cola_destruir(cola_ej3, pila_destruir_wrapper);
+    print_test("\nVerificar que primero sea una pila ", cola_ver_primero(cola_ej3) == pila);
+    desencolar_pilas(cola_ej3, 15);
 
-        // libero la pila
-        pila_destruir(pila);
+    //Se destruye la cola de pilas con el wrapper
+    cola_destruir(cola_ej3, pila_destruir_wrapper);
 
+    // libero la pila
+    pila_destruir(pila);
 
-
-
-    }
->>>>>>> c5c738a2bb1f74f36122d9151c1b9f87824d62e5
+}

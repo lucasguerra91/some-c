@@ -5,4 +5,4 @@ run: build
 	clear ; echo Ejecutando.. ; ./pruebas
 
 valgrind:
-	valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./pruebas
+	valgrind --leak-check=full --track-origins=yes --show-reachable=yes -v ./pruebas

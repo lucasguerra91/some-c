@@ -59,6 +59,12 @@ void* cola_desencolar(cola_t *cola);
 // Verifica si la cola existe
 bool cola_existe(cola_t cola);
 
+
+
+// Adicionales
+
+void ver_cola(cola_t *cola);
+
 /* *****************************************************************
  *                      PRUEBAS UNITARIAS
  * *****************************************************************/
