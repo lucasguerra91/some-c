@@ -43,17 +43,7 @@ int maximo(int vector[], int n) {
 
 int comparar(int vector1[], int n1, int vector2[], int n2) {
 
-    int limite = n1 > n2 ? n1 :n2;
-
-    for (int i = 0; i < limite ; i++) {
-
-            if (n1 <= i && n2 > i){
-                return -1;
-            }
-
-            if (n1 > i && n2 <= i){
-                return 1;
-            }
+    for (int i = 0; i < n1 && i < n2 ; i++) {
 
             if (vector1[i] > vector2[i]){
                 return 1;
@@ -64,8 +54,10 @@ int comparar(int vector1[], int n1, int vector2[], int n2) {
             }
     }
 
-    // Fueron iguales hasta lo ultimo
-    return 0;
+    if (n1 == n2) return 0;
+
+    return n1 > n2 ? 1 : -1 ;
+
 
 }
 

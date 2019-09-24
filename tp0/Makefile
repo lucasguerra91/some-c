@@ -1,4 +1,4 @@
-build: pila.c pila.h testing.c testing.h pruebas_alumno_pila.c
+build: tp0.c tp0.h testing.c testing.h tp0_pruebas.c
 	gcc -g -std=c99 -Wall -Wconversion -Wtype-limits -pedantic -Werror -o pruebas *.c
 
 run: build

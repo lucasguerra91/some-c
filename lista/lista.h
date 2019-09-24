@@ -24,26 +24,32 @@ typedef struct nodo nodo_t;
  * *****************************************************************/
 
 
-lista_t *lista_crear(void);
+lista_t *lista_crear(void);     // ok
 
-bool lista_esta_vacia(const lista_t *lista);
+bool lista_esta_vacia(const lista_t *lista);    // ok
 
-bool lista_insertar_primero(lista_t *lista, void *dato);
+bool lista_insertar_primero(lista_t *lista, void *dato);       // ok
 
-bool lista_insertar_ultimo(lista_t *lista, void *dato);
+bool lista_insertar_ultimo(lista_t *lista, void *dato);     // ok
 
-void *lista_borrar_primero(lista_t *lista);
+void *lista_borrar_primero(lista_t *lista);     // ok
 
-void *lista_ver_primero(const lista_t *lista);
+void *lista_ver_primero(const lista_t *lista);  // ok
 
-void *lista_ver_ultimo(const lista_t* lista);
+void *lista_ver_ultimo(const lista_t* lista);   // ok
 
-size_t lista_largo(const lista_t *lista);
+size_t lista_largo(const lista_t *lista);       // ok
 
 void lista_destruir(lista_t *lista, void destruir_dato(void *));
 
 
 
+
+/* *****************************************************************
+ *                    En desarrollo
+ * *****************************************************************/
+void lista_imprimir_enteros(lista_t *lista);
+void lista_borrar_pos_pares(lista_t* lista);
 
 
 #endif //SOME_C_LISTA_H

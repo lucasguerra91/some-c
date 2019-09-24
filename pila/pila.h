@@ -60,13 +60,16 @@ void* pila_desapilar(pila_t *pila);
  *                    FUNCIONES ADICIONALES
  * *****************************************************************/
 
+// Verifica si una pila es piramidal, sin modificarla
+bool pila_es_piramidal(pila_t* pila);
+
 // Devuelve la cantidad actual de elementos en la pila
 size_t pila_ver_cantidad(pila_t *pila);
 
 // Devuelve la capacidad actual de la pila
 size_t pila_ver_capacidad(pila_t *pila);
 
-// Imprime todos los elementos de la pila
+// Imprime todos los elementos de la pila {EN DESARROLLO}
 void pila_imprimir(pila_t *pila);
 
 

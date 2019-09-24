@@ -3,11 +3,53 @@
 #include <stddef.h>
 #include <stdio.h>
 
+
+void apilar_elementos_creciente(pila_t* pila, int cant){
+    int vector[cant];
+
+    for (int j = 0; j < cant ; j++) {
+        vector[j] = j;
+    }
+    printf("\n\n--- Apilando %d elementos ---\n", cant);
+    for (int i = 0; i < cant ; i++) {
+        pila_apilar(pila, &vector[i]);
+    }
+}
+
+
+void apilar_elementos_decreciente(pila_t* pila, int cant){
+    int vector[cant];
+    int contenido = cant - 1 ;
+
+    for (int j = 0; j < cant ; j++) {
+        vector[j] = contenido;
+        contenido--;
+    }
+
+    printf("\n\n--- Apilando %d elementos ---\n", cant);
+    for (int i = 0; i < cant ; i++) {
+        pila_apilar(pila, &vector[i]);
+    }
+}
+
+
+void desapilar_elementos(pila_t* pila, int cant){
+    printf("\n\n--- Desapilando %d elementos ---\n", cant);
+
+    void* aux;
+
+    for (int i = 0; i < cant; i++) {
+        aux = pila_desapilar(pila);
+        printf("Se desapiló %u", *(int *)aux);
+    }
+}
+
+
 /* ******************************************************************
  *                   PRUEBAS UNITARIAS ALUMNO
  * *****************************************************************/
 
-void pruebas_pila_alumno() {
+void prueba_funcionamiento() {
 
     pila_t* ejemplo = NULL;
     print_test("\nPuntero inicializado a NULL ", ejemplo == NULL);
@@ -105,5 +147,20 @@ void pruebas_pila_alumno() {
     printf("\n\nBorrando pila y liberando memoria..\n");
     pila_destruir(ejemplo);
     printf("Fin\n");
+
+}
+
+void pruebas_pila_alumno(){
+    pila_t* pila_ej = pila_crear();
+    apilar_elementos_creciente(pila_ej, 5);
+//    pila_imprimir(pila_ej);
+    print_test("\n\nPila [4, 3, 2, 1, 0] es piramidal", pila_es_piramidal(pila_ej) == false);
+    pila_destruir(pila_ej);
+
+    pila_t* pila_ej2 = pila_crear();
+    apilar_elementos_decreciente(pila_ej2, 5);
+//    pila_imprimir(pila_ej);
+    print_test("\n\nPila [0, 1, 2, 3, 4] no es piramidal ", pila_es_piramidal(pila_ej2) == false);
+    pila_destruir(pila_ej2);
 
 }
