@@ -1,7 +1,3 @@
-//
-// Created by lguerra on 9/17/19.
-//
-
 #include "lista.h"
 
 
@@ -58,7 +54,9 @@ lista_iter_t* lista_iter_crear (lista_t* lista){
     if (!lista) return NULL;
 
     lista_iter_t* iter = malloc(sizeof(lista_iter_t *));
-    if (iter == NULL) return NULL;
+    //iter->lista = malloc(sizeof(lista_t *));
+
+    if (iter == NULL ) return NULL;
 
     iter->lista = lista;
     iter->anterior = NULL;
@@ -69,6 +67,115 @@ lista_iter_t* lista_iter_crear (lista_t* lista){
 }
 
 
+bool lista_iter_al_final(const lista_iter_t* iter){
+
+    if (!iter) return false;
+
+    if ((iter->anterior == iter->lista->ultimo) && (iter->actual == NULL)){
+        return true;
+    }
+
+    return false;
+}
+
+
+bool lista_iter_avanzar (lista_iter_t* iter){
+
+    if (!iter || lista_esta_vacia(iter->lista)) return false;
+
+    if (lista_iter_al_final(iter)) return false;
+
+    if (iter->actual == iter->lista->ultimo){
+        iter->anterior = iter->actual;
+        iter->actual = NULL;
+    }
+
+    iter->anterior = iter->actual;
+    iter->actual = iter->actual->prox;
+    return true;
+}
+
+void* lista_iter_ver_actual (const lista_iter_t* iter){
+
+    if (!iter) return NULL;
+    void* actual = iter->actual->dato;
+    return actual;
+}
+
+
+bool lista_iter_insertar (lista_iter_t* iter, void* dato){
+
+    if (!iter) return false;
+
+    nodo_t* nuevo = nodo_crear(dato);
+    if (nuevo == NULL) return  false;
+
+    if (lista_iter_al_final(iter)){
+
+        iter->lista->ultimo->prox = nuevo;
+        iter->lista->ultimo = nuevo;
+        iter->anterior = iter->lista->ultimo;
+
+    } else if (lista_esta_vacia(iter->lista)){
+
+        iter->lista->primero = nuevo;
+        iter->lista->ultimo = nuevo;
+        iter->actual = iter->lista->primero;
+        //iSi entró por aca, anterior sigue siendo NULL
+
+    } else{
+
+        iter->anterior->prox = nuevo;
+        nuevo->prox = iter->actual;
+        iter->anterior = nuevo;
+
+    }
+
+    iter->lista->largo++;
+    return true;
+}
+
+
+void* lista_iter_borrar (lista_iter_t* iter){
+
+    if (!iter) return NULL;
+
+    if (lista_esta_vacia(iter->lista) || lista_iter_al_final(iter)) return NULL;
+
+    nodo_t* temp =  iter->actual;
+    void* dato = temp->dato;
+
+    if (iter->actual == iter->lista->primero){
+
+        if (iter->actual == iter->lista->ultimo) iter->lista->ultimo = NULL;
+
+        iter->lista->primero = iter->actual->prox;
+        iter->actual = iter->lista->primero;
+
+    }else if (iter->actual == iter->lista->ultimo){
+
+        iter->anterior->prox = NULL;
+        iter->lista->ultimo = iter->anterior;
+        iter->actual = NULL;
+
+    }else{
+
+        iter->anterior->prox = iter->actual->prox;
+        iter->actual = iter->actual->prox;
+
+    }
+
+    free(temp);
+    iter->lista->largo--;
+    return dato;
+}
+
+
+void lista_iter_destruir (lista_iter_t* iter){
+
+    if (!iter) return;
+    free(iter);
+}
 
 
 /* *****************************************************************
@@ -80,7 +187,7 @@ size_t lista_largo(const lista_t* lista){
 }
 
 
-lista_t* lista_crear(void){
+lista_t *lista_crear(void){
 
     lista_t *lista = malloc(sizeof(lista_t));
 

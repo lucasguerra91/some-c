@@ -58,18 +58,31 @@ void prueba_funcionamiento(){
 
 
     agregar_array_enteros(lista_ej,  10);
-    lista_imprimir_enteros(lista_ej);
+    //lista_imprimir_enteros(lista_ej);
 
     printf("\n");
     lista_borrar_pos_pares(lista_ej);
-    lista_imprimir_enteros(lista_ej);
+    //lista_imprimir_enteros(lista_ej);
     printf("\n");
 
 
     free(lista_ej);
 }
 
+void prueba_iterador_externo(){
+    printf("\n# Pruebas con iterador externo.\n");
 
+    lista_t* lista = lista_crear();
+
+    lista_iter_t* iterador = lista_iter_crear(lista);
+    print_test("\n\tEn iterador recien creado, actual esta al final", lista_iter_al_final(iterador) == true);
+
+    //agregar_array_enteros(lista, 15);
+    print_test("\n\tActual es 0", *(int *)lista_iter_ver_actual(iterador) == 0);
+
+
+    free(iterador);
+}
 
 
 
@@ -77,4 +90,5 @@ void prueba_funcionamiento(){
 
 void pruebas_lista_alumno() {
     prueba_funcionamiento();
+    prueba_iterador_externo();
 }
