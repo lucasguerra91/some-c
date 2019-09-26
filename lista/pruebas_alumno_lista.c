@@ -59,6 +59,7 @@ void prueba_funcionamiento(){
 
     agregar_array_enteros(lista_ej,  10);
     lista_imprimir_enteros(lista_ej);
+
     printf("\n");
     lista_borrar_pos_pares(lista_ej);
     lista_imprimir_enteros(lista_ej);

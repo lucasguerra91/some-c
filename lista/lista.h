@@ -50,10 +50,19 @@ void lista_destruir(lista_t *lista, void destruir_dato(void *));
  *                    PRIMITIVAS DEL ITERADOR EXTERNO
  * *****************************************************************/
 
+// Crea un nuevo iterador a partir de una lista.
+// Pre: La lista existe(aunque esté vacía), de lo contrario devuelve NULL
+// Post: Devuelve un iterador que apunta al primer nodo de la lista.
 lista_iter_t* lista_iter_crear (lista_t* lista);
 
+// Verifica si el iterador se encuentra al final de la lista (no en el último nodo).
+// Pre: Recibe un iterador previamente creado.
+// Post: Devuelve true o false dependiendo si esta o no al final de la lista el iterador.
 bool lista_iter_al_final (const lista_iter_t* iter);
 
+// Avanza una posición dentro de la lista.
+// Pre: El iterador existe, y se encuentra en una posición válida para desplazarse.
+// Post: Devuelve true si logró avanzar, de lo contrario false.
 bool lista_iter_avanzar (lista_iter_t* iter);
 
 void* lista_iter_ver_actual (const lista_iter_t* iter);

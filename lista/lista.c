@@ -21,6 +21,7 @@ struct lista{
 };
 
 struct lista_iter{
+    lista_t* lista;
     struct nodo* anterior;
     struct nodo* actual;
 };
@@ -52,7 +53,20 @@ void mostrar_nodo(nodo_t* nodo){
  * *****************************************************************/
 
 
+lista_iter_t* lista_iter_crear (lista_t* lista){
 
+    if (!lista) return NULL;
+
+    lista_iter_t* iter = malloc(sizeof(lista_iter_t *));
+    if (iter == NULL) return NULL;
+
+    iter->lista = lista;
+    iter->anterior = NULL;
+    iter->actual = iter->lista->primero;
+
+    return iter;
+
+}
 
 
 
@@ -90,6 +104,7 @@ bool lista_esta_vacia(const lista_t* lista){
 
 
 bool lista_insertar_primero(lista_t *lista, void *dato){
+
     if (!lista) return false;
 
     nodo_t* nuevo = nodo_crear(dato);
@@ -109,20 +124,22 @@ bool lista_insertar_primero(lista_t *lista, void *dato){
 
 
 void *lista_ver_primero(const lista_t *lista){
+
     if (!lista || lista_esta_vacia(lista)) return NULL;
     return lista->primero->dato;
 }
 
 
 void *lista_ver_ultimo(const lista_t* lista){
+
     if (!lista || lista_esta_vacia(lista)) return NULL;
     return lista->ultimo->dato;
 }
 
 
 bool lista_insertar_ultimo(lista_t *lista, void *dato){
-    if (!lista) return false;
 
+    if (!lista) return false;
 
     nodo_t* nuevo = nodo_crear(dato);
     if (nuevo == NULL) return false;
@@ -160,12 +177,12 @@ void *lista_borrar_primero(lista_t *lista){
 
 // solo testing
 void lista_imprimir_enteros(lista_t *lista){
+
     nodo_t* indice = lista->primero;
 
-
-    //printf("[");  Si abro corchetes acá, la lista se imprime como 00000000
+    //printf("[");  // Si abro corchetes acá, la lista se imprime como 00000000
     while (indice != NULL){
-        printf("%p - ", indice->dato);
+        printf("%d ", *(int *)indice->dato);
         indice = indice->prox;
     }
     //printf("\n");
@@ -175,6 +192,7 @@ void lista_imprimir_enteros(lista_t *lista){
 }
 
 void lista_borrar_pos_pares(lista_t* lista){
+
     if (!lista) return;
 
     size_t contador = 0;
@@ -182,15 +200,27 @@ void lista_borrar_pos_pares(lista_t* lista){
     nodo_t* act = lista->primero;
 
     while (act != NULL){
+
         contador++;
+
         if (contador % 2 == 0){
-            ant->prox = act->prox;
             nodo_t* aux = act;
-            act = ant->prox;
+
+            if (act == lista->primero) {
+                lista->primero = act->prox;
+            }
+
+            if (act == lista->ultimo){
+                lista->ultimo = ant;
+            }
+
+             ant->prox = act->prox;
+             act = act->prox->prox;
+
             free(aux);
         } else{
             ant = act;
-            act = ant->prox;
+            act = act->prox;
         }
     }
 }
