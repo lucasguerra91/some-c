@@ -18,6 +18,9 @@ typedef struct lista lista_t;
 struct nodo;
 typedef struct nodo nodo_t;
 
+struct lista_iter;
+typedef struct lista_iter lista_iter_t;
+
 
 /* *****************************************************************
  *                    PRIMITIVAS DE LA LISTA
