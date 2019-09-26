@@ -20,6 +20,11 @@ struct lista{
     size_t largo;
 };
 
+struct lista_iter{
+    struct nodo* anterior;
+    struct nodo* actual;
+};
+
 /* *****************************************************************
  *                    PRIMITIVAS DEL NODO
  * *****************************************************************/
@@ -42,9 +47,18 @@ void mostrar_nodo(nodo_t* nodo){
     // printf("Apunta a: %p", nodo->prox);
 }
 
+/* *****************************************************************
+ *              PRIMITIVAS DEL ITERADOR EXTERNO
+ * *****************************************************************/
+
+
+
+
+
+
 
 /* *****************************************************************
- *                    primeroITIVAS DE LA LISTA
+ *                    PRIMITIVAS DE LA LISTA
  * *****************************************************************/
 
 size_t lista_largo(const lista_t* lista){
@@ -181,28 +195,3 @@ void lista_borrar_pos_pares(lista_t* lista){
     }
 }
 
-//void lista_borrar_pos_pares(lista_t* lista){
-// nodo_t* act = lista->primero;
-// nodo_t* ant = NULL;
-// size_t pos = 0;
-//
-// while (act){
-//     nodo_t* aux = act->prox;
-//
-//     if (!pos){
-//         lista->primero = aux;
-//         free(act);
-//     }
-//
-//     if (!pos % 2 && pos){
-//         ant->prox = aux;
-//         free(aux);
-//     }
-//
-//     if (pos % 2){
-//         ant = act;
-//     }
-//     act = aux;
-//     pos++;
-// }
-//}
