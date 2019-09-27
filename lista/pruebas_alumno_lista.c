@@ -112,16 +112,45 @@ void prueba_iterador_externo(){
 
     int a = 1;
     // Prueba de insertar
-    print_test("\tAgregar 1 con iter_insertar", lista_iter_insertar(iterador, &a) == true);
+    print_test("\n\tAgregar 1 con iter_insertar", lista_iter_insertar(iterador, &a) == true);
     print_test("\tEl nuevo actual es 1", *(int *)lista_iter_ver_actual(iterador) == 1);
 
     // Prueba de borrar
-    print_test("\tBorrar 1 con iter_borrar", *(int *)lista_iter_borrar(iterador) == 1);
+    print_test("\n\tBorrar 1 con iter_borrar", *(int *)lista_iter_borrar(iterador) == 1);
     print_test("\tEl nuevo actual es NULL", lista_iter_ver_actual(iterador) == NULL);
 
+    // Vuelvo a agregar
+    print_test("\n\tAgregar 1 con iterador1", lista_iter_insertar(iterador, &a) == true);
+    print_test("\tEl nuevo actual es 1", *(int *)lista_iter_ver_actual(iterador) == 1);
+    print_test("\tLargo de la lista == 1", lista_largo(lista) == 1);
+
+    int b = 2;
+    print_test("\n\tAgregar 2 con iterador1", lista_iter_insertar(iterador, &b) == true);
+    print_test("\tEl nuevo actual es 2", *(int *)lista_iter_ver_actual(iterador) == 2);
+    print_test("\tLargo de la lista == 2", lista_largo(lista) == 2);
+
+    // Creo segundo iterador
+    lista_iter_t* iterador2 = lista_iter_crear(lista);
+    printf("\n\tCreación de un segundo iterador\n");
+    print_test("\tEl actual del iterador2 es 2", *(int *)lista_iter_ver_actual(iterador2) == 2);
+    print_test("\tLargo de la lista == 2", lista_largo(lista) == 2);
+
+    // Avanzar en el iterador 2
+    print_test("\tAvanzar en iter 2", lista_iter_avanzar(iterador2) == true);
+    print_test("\tEl actual de iter 2 es 1", *(int *)lista_iter_ver_actual(iterador2) == 1);
+
+    // No modifica actual de iter 1
+    print_test("\tEl actual de iter 1 es 2", *(int *)lista_iter_ver_actual(iterador) == 2);
+
+    int c = 3;
+    // Inserto 3 desde iterador 2
+    print_test("\n\tAgregar 3 a la lista desde iterador2", lista_iter_insertar(iterador2, &c) == true);
+    print_test("\tEl nuevo actual de iterador2 es 3", *(int *)lista_iter_ver_actual(iterador2) == 3);
+    print_test("\tLargo de la lista == 3", lista_largo(lista) == 3);
 
 
     lista_iter_destruir(iterador);
+    lista_iter_destruir(iterador2);
     lista_destruir(lista, NULL);
 }
 
@@ -191,5 +220,5 @@ void ejemplo_iteradores() {
 void pruebas_lista_alumno() {
     prueba_funcionamiento();
     prueba_iterador_externo();
-    ejemplo_iteradores();
+    //ejemplo_iteradores();
 }
