@@ -86,10 +86,11 @@ bool lista_iter_avanzar (lista_iter_t* iter){
     if (iter->actual == iter->lista->ultimo){
         iter->anterior = iter->actual;
         iter->actual = NULL;
+    }else{
+        iter->anterior = iter->actual;
+        iter->actual = iter->actual->prox;
     }
 
-    iter->anterior = iter->actual;
-    iter->actual = iter->actual->prox;
     return true;
 }
 
@@ -114,11 +115,12 @@ bool lista_iter_insertar (lista_iter_t* iter, void* dato){
 
     if (iter->actual == iter->lista->primero){
         iter->lista->primero = nuevo;
+        if (iter->actual == iter->lista->ultimo) iter->lista->ultimo = nuevo;
     }else if (lista_iter_al_final(iter)){
         iter->lista->ultimo = nuevo;
+    } else{
         iter->anterior->prox = nuevo;
     }
-
 
     nuevo->prox = iter->actual;
     iter->actual = nuevo;
@@ -274,60 +276,53 @@ void *lista_borrar_primero(lista_t *lista){
 
 }
 
-// solo testing
-void lista_imprimir_enteros(lista_t *lista){
-
-    nodo_t* indice = lista->primero;
-
-    //printf("[");  // Si abro corchetes acá, la lista se imprime como 00000000
-    while (indice != NULL){
-        printf("%d ", *(int *)indice->dato);
-        indice = indice->prox;
-    }
-    //printf("\n");
-
-    free(indice);
-
-}
-
-//void lista_borrar_pos_pares(lista_t* lista){
-//
-//    if (!lista) return;
-//
-//    size_t contador = 0;
-//    nodo_t* ant = NULL;
-//    nodo_t* act = lista->primero;
-//
-//    while (act != NULL){
-//
-//        contador++;
-//
-//        if (contador % 2 == 0){
-//            nodo_t* aux = act;
-//
-//            if (act == lista->primero) {
-//                lista->primero = act->prox;
-//            }
-//
-//            if (act == lista->ultimo){
-//                lista->ultimo = ant;
-//            }
-//
-//             ant->prox = act->prox;
-//             act = act->prox->prox;
-//
-//            free(aux);
-//        } else{
-//            ant = act;
-//            act = act->prox;
-//        }
-//    }
-//}
 
 void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
-    if(!lista) return;
-    nodo_t* nodo = lista->primero;
-    while(nodo && visitar(nodo->dato, extra)){
-        nodo = nodo->prox;
+    if(!lista || lista_esta_vacia(lista)) return;
+
+    nodo_t* actual = lista->primero;
+
+    while(actual && visitar(actual->dato, extra)){
+        actual = actual->prox;
     }
 }
+
+
+void lista_destruir(lista_t *lista, void destruir_dato(void *)){
+
+    if (!lista) return;
+
+    if(destruir_dato == NULL){
+        while (lista->primero){
+            lista_borrar_primero(lista);
+        }
+    } else{
+        while (lista->primero){
+            nodo_t* temp = lista->primero;
+            lista->primero = lista->primero->prox;
+            destruir_dato(temp->dato);
+            free(temp);
+        }
+    }
+    free(lista);
+}
+
+
+
+//// solo testing
+//void lista_imprimir_enteros(lista_t *lista){
+//
+//    nodo_t* indice = lista->primero;
+//
+//    //printf("[");  // Si abro corchetes acá, la lista se imprime como 00000000
+//    while (indice != NULL){
+//        printf("%d ", *(int *)indice->dato);
+//        indice = indice->prox;
+//    }
+//    //printf("\n");
+//
+//    free(indice);
+//}
+
+
+

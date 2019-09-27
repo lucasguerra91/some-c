@@ -24,6 +24,7 @@ void agregar_array_enteros(lista_t* lista,  int cant){
     for (int i = 0; i < cant ; i++) {
         lista_insertar_ultimo(lista, &vector[i]);
     }
+
 }
 
 void iter_agregar_array_enteros(lista_iter_t* iter,  int cant){
@@ -39,6 +40,7 @@ void iter_agregar_array_enteros(lista_iter_t* iter,  int cant){
     for (int i = 0; i < cant ; i++) {
         lista_iter_insertar(iter, &vector[i]);
     }
+
 }
 
 
@@ -47,8 +49,11 @@ void iter_borrar_array_enteros(lista_iter_t* iter,  int cant){
     printf("\n\t--- Borrando %d elementos ---\n", cant);
 
     for (int i = 0; i < cant ; i++) {
-        lista_iter_borrar(iter);
+        void* dato;
+        dato = lista_iter_borrar(iter);
+        free(dato);
     }
+
 }
 
 
@@ -99,26 +104,84 @@ void prueba_iterador_externo(){
     lista_t* lista = lista_crear();
     lista_iter_t* iterador = lista_iter_crear(lista);
 
-
+    // Prueba ver actual
     print_test("\n\tEl nuevo actual es NULL", lista_iter_ver_actual(iterador) == NULL);
+
+    // Prueba iter_al_final con recien creado
     print_test("\tEl iterador está al final", lista_iter_al_final(iterador) == true);
 
     int a = 1;
+    // Prueba de insertar
     print_test("\tAgregar 1 con iter_insertar", lista_iter_insertar(iterador, &a) == true);
     print_test("\tEl nuevo actual es 1", *(int *)lista_iter_ver_actual(iterador) == 1);
 
+    // Prueba de borrar
     print_test("\tBorrar 1 con iter_borrar", *(int *)lista_iter_borrar(iterador) == 1);
-    iter_agregar_array_enteros(iterador, 10); // agrega del 10 al 19
-    print_test("\tEl nuevo actual es 10", *(int *)lista_iter_ver_actual(iterador) == 10);
-
-    iter_borrar_array_enteros(iterador, 10);
     print_test("\tEl nuevo actual es NULL", lista_iter_ver_actual(iterador) == NULL);
 
-    free(iterador);
-    free(lista);
+
+
+    lista_iter_destruir(iterador);
+    lista_destruir(lista, NULL);
+}
+
+// Imprimir una lista con iterador externo
+
+void imprimir_iter_externo(lista_t *lista)
+{
+    lista_iter_t *iter = lista_iter_crear(lista);
+    int num_items = 0;
+
+    while (!lista_iter_al_final(iter))
+    {
+        char *elemento = lista_iter_ver_actual(iter);
+        printf("%d. %s\n", ++num_items, elemento);
+
+        lista_iter_avanzar(iter);
+    }
+    printf("Tengo que comprar %d ítems\n", num_items);
+    lista_iter_destruir(iter);
 }
 
 
+
+// Imprimir una lista con iterador interno
+
+
+bool imprimir_un_item(void *elemento, void *extra)
+{
+    // Sabemos que ‘extra’ es un entero, por tanto le podemos hacer un cast.
+    int *contador = extra;
+    printf("%d. %s\n", ++(*contador), (char*) elemento);
+
+    return true; // seguir iterando
+}
+
+void imprimir_iter_interno(lista_t *lista)
+{
+    int num_items = 0;
+    lista_iterar(lista, imprimir_un_item, &num_items);
+    printf("Tengo que comprar %d ítems\n", num_items);
+}
+
+
+// Ejemplo de uso
+
+
+
+void ejemplo_iteradores() {
+    lista_t *super = lista_crear();
+
+    lista_insertar_ultimo(super, "leche");
+    lista_insertar_ultimo(super, "huevos");
+    lista_insertar_ultimo(super, "pan");
+    lista_insertar_ultimo(super, "mermelada");
+
+    imprimir_iter_externo(super);
+    imprimir_iter_interno(super);
+
+    lista_destruir(super, NULL);
+}
 
 /* ******************************************************************
  *                   PRUEBAS UNITARIAS ALUMNO
@@ -128,4 +191,5 @@ void prueba_iterador_externo(){
 void pruebas_lista_alumno() {
     prueba_funcionamiento();
     prueba_iterador_externo();
+    ejemplo_iteradores();
 }

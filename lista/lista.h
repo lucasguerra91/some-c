@@ -40,8 +40,9 @@ void *lista_ver_ultimo(const lista_t* lista);   // ok
 
 size_t lista_largo(const lista_t *lista);       // ok
 
-void lista_destruir(lista_t *lista, void destruir_dato(void *));
+void lista_destruir(lista_t *lista, void destruir_dato(void *));    // ok
 
+void lista_iterar(lista_t *lista, bool visitar(void*, void*), void *extra); // ok
 
 /* *****************************************************************
  *                    PRIMITIVAS DEL ITERADOR EXTERNO
@@ -76,6 +77,6 @@ void lista_iter_destruir (lista_iter_t* iter);
  * *****************************************************************/
 //void lista_imprimir_enteros(lista_t *lista);
 //void lista_borrar_pos_pares(lista_t* lista);
-void lista_iterar(lista_t *lista, bool visitar(void*, void*), void *extra);
+
 
 #endif //SOME_C_LISTA_H
