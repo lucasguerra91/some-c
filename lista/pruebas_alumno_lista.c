@@ -2,25 +2,59 @@
 #include "testing.h"
 #include <stddef.h>
 #include "stdio.h"
+#include <stdbool.h>
+#include <stdlib.h>
+
 
 /* ******************************************************************
- *                   PRUEBAS UNITARIAS ALUMNO
+ *                   FUNCIONES DE CARGA Y BORRADO
  * *****************************************************************/
+
 
 void agregar_array_enteros(lista_t* lista,  int cant){
 
-    printf("\n\n--- Agregando %d elementos ---\n", cant);
+    printf("\n\t--- Agregando %d elementos ---\n", cant);
 
     int vector[cant];
 
     for (int j = 0; j < cant ; j++) {
-        vector[j] = j;
+        vector[j] = j + 1;
     }
 
     for (int i = 0; i < cant ; i++) {
-        print_test("Agregando elemento a la lista", lista_insertar_ultimo(lista, &vector[i]) == true);
+        lista_insertar_ultimo(lista, &vector[i]);
     }
 }
+
+void iter_agregar_array_enteros(lista_iter_t* iter,  int cant){
+
+    printf("\n\t--- Agregando %d elementos ---\n", cant);
+
+    int vector[cant];
+
+    for (int j = 0; j < cant ; j++) {
+        vector[j] = j + 1;
+    }
+
+    for (int i = 0; i < cant ; i++) {
+        lista_iter_insertar(iter, &vector[i]);
+    }
+}
+
+
+void iter_borrar_array_enteros(lista_iter_t* iter,  int cant){
+
+    printf("\n\t--- Borrando %d elementos ---\n", cant);
+
+    for (int i = 0; i < cant ; i++) {
+        lista_iter_borrar(iter);
+    }
+}
+
+
+/* ******************************************************************
+ *                   PRUEBAS DE FUNCIONAMIENTO
+ * *****************************************************************/
 
 
 void prueba_funcionamiento(){
@@ -55,37 +89,40 @@ void prueba_funcionamiento(){
 
     print_test("\n\tIntenta borrar el primer elemento con lista vacía = NULL", lista_borrar_primero(lista_ej) == NULL);
 
-
-
-    agregar_array_enteros(lista_ej,  10);
-    //lista_imprimir_enteros(lista_ej);
-
-    printf("\n");
-    lista_borrar_pos_pares(lista_ej);
-    //lista_imprimir_enteros(lista_ej);
-    printf("\n");
-
-
     free(lista_ej);
 }
+
 
 void prueba_iterador_externo(){
     printf("\n# Pruebas con iterador externo.\n");
 
     lista_t* lista = lista_crear();
-
     lista_iter_t* iterador = lista_iter_crear(lista);
-    print_test("\n\tEn iterador recien creado, actual esta al final", lista_iter_al_final(iterador) == true);
 
-    //agregar_array_enteros(lista, 15);
-    print_test("\n\tActual es 0", *(int *)lista_iter_ver_actual(iterador) == 0);
 
+    print_test("\n\tEl nuevo actual es NULL", lista_iter_ver_actual(iterador) == NULL);
+    print_test("\tEl iterador está al final", lista_iter_al_final(iterador) == true);
+
+    int a = 1;
+    print_test("\tAgregar 1 con iter_insertar", lista_iter_insertar(iterador, &a) == true);
+    print_test("\tEl nuevo actual es 1", *(int *)lista_iter_ver_actual(iterador) == 1);
+
+    print_test("\tBorrar 1 con iter_borrar", *(int *)lista_iter_borrar(iterador) == 1);
+    iter_agregar_array_enteros(iterador, 10); // agrega del 10 al 19
+    print_test("\tEl nuevo actual es 10", *(int *)lista_iter_ver_actual(iterador) == 10);
+
+    iter_borrar_array_enteros(iterador, 10);
+    print_test("\tEl nuevo actual es NULL", lista_iter_ver_actual(iterador) == NULL);
 
     free(iterador);
+    free(lista);
 }
 
 
 
+/* ******************************************************************
+ *                   PRUEBAS UNITARIAS ALUMNO
+ * *****************************************************************/
 
 
 void pruebas_lista_alumno() {

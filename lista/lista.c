@@ -5,21 +5,21 @@
  *                DEFINICIÓN DE LOS TIPOS DE DATOS
  * *****************************************************************/
 
-struct nodo{
+typedef struct nodo{
     void* dato;
     struct nodo* prox;
-};
+} nodo_t;
 
 struct lista{
-    struct nodo* primero;
-    struct nodo* ultimo;
+    nodo_t* primero;
+    nodo_t* ultimo;
     size_t largo;
 };
 
 struct lista_iter{
+    nodo_t* anterior;
+    nodo_t* actual;
     lista_t* lista;
-    struct nodo* anterior;
-    struct nodo* actual;
 };
 
 /* *****************************************************************
@@ -28,7 +28,7 @@ struct lista_iter{
 
 nodo_t* nodo_crear(void* valor){
 
-    nodo_t *nodo = malloc(sizeof(nodo_t));
+    nodo_t* nodo = malloc(sizeof(nodo_t));
 
     if (nodo == NULL) return NULL;
 
@@ -48,22 +48,20 @@ void mostrar_nodo(nodo_t* nodo){
  *              PRIMITIVAS DEL ITERADOR EXTERNO
  * *****************************************************************/
 
-
-lista_iter_t* lista_iter_crear (lista_t* lista){
+// CREAR
+lista_iter_t* lista_iter_crear(lista_t* lista){
 
     if (!lista) return NULL;
 
-    lista_iter_t* iter = malloc(sizeof(lista_iter_t *));
-    //iter->lista = malloc(sizeof(lista_t *));
+    lista_iter_t* iter = malloc(sizeof(lista_iter_t));
 
     if (iter == NULL ) return NULL;
 
     iter->lista = lista;
+    iter->actual = lista->primero;
     iter->anterior = NULL;
-    iter->actual = iter->lista->primero;
 
     return iter;
-
 }
 
 
@@ -98,8 +96,10 @@ bool lista_iter_avanzar (lista_iter_t* iter){
 void* lista_iter_ver_actual (const lista_iter_t* iter){
 
     if (!iter) return NULL;
-    void* actual = iter->actual->dato;
-    return actual;
+
+    if (lista_iter_al_final(iter)) return NULL;
+
+    return iter->actual->dato;
 }
 
 
@@ -108,28 +108,20 @@ bool lista_iter_insertar (lista_iter_t* iter, void* dato){
     if (!iter) return false;
 
     nodo_t* nuevo = nodo_crear(dato);
+
     if (nuevo == NULL) return  false;
 
-    if (lista_iter_al_final(iter)){
 
-        iter->lista->ultimo->prox = nuevo;
-        iter->lista->ultimo = nuevo;
-        iter->anterior = iter->lista->ultimo;
-
-    } else if (lista_esta_vacia(iter->lista)){
-
+    if (iter->actual == iter->lista->primero){
         iter->lista->primero = nuevo;
+    }else if (lista_iter_al_final(iter)){
         iter->lista->ultimo = nuevo;
-        iter->actual = iter->lista->primero;
-        //iSi entró por aca, anterior sigue siendo NULL
-
-    } else{
-
         iter->anterior->prox = nuevo;
-        nuevo->prox = iter->actual;
-        iter->anterior = nuevo;
-
     }
+
+
+    nuevo->prox = iter->actual;
+    iter->actual = nuevo;
 
     iter->lista->largo++;
     return true;
@@ -298,37 +290,44 @@ void lista_imprimir_enteros(lista_t *lista){
 
 }
 
-void lista_borrar_pos_pares(lista_t* lista){
+//void lista_borrar_pos_pares(lista_t* lista){
+//
+//    if (!lista) return;
+//
+//    size_t contador = 0;
+//    nodo_t* ant = NULL;
+//    nodo_t* act = lista->primero;
+//
+//    while (act != NULL){
+//
+//        contador++;
+//
+//        if (contador % 2 == 0){
+//            nodo_t* aux = act;
+//
+//            if (act == lista->primero) {
+//                lista->primero = act->prox;
+//            }
+//
+//            if (act == lista->ultimo){
+//                lista->ultimo = ant;
+//            }
+//
+//             ant->prox = act->prox;
+//             act = act->prox->prox;
+//
+//            free(aux);
+//        } else{
+//            ant = act;
+//            act = act->prox;
+//        }
+//    }
+//}
 
-    if (!lista) return;
-
-    size_t contador = 0;
-    nodo_t* ant = NULL;
-    nodo_t* act = lista->primero;
-
-    while (act != NULL){
-
-        contador++;
-
-        if (contador % 2 == 0){
-            nodo_t* aux = act;
-
-            if (act == lista->primero) {
-                lista->primero = act->prox;
-            }
-
-            if (act == lista->ultimo){
-                lista->ultimo = ant;
-            }
-
-             ant->prox = act->prox;
-             act = act->prox->prox;
-
-            free(aux);
-        } else{
-            ant = act;
-            act = act->prox;
-        }
+void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
+    if(!lista) return;
+    nodo_t* nodo = lista->primero;
+    while(nodo && visitar(nodo->dato, extra)){
+        nodo = nodo->prox;
     }
 }
-

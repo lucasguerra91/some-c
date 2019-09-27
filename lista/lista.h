@@ -15,9 +15,6 @@
 struct lista;
 typedef struct lista lista_t;
 
-struct nodo;
-typedef struct nodo nodo_t;
-
 struct lista_iter;
 typedef struct lista_iter lista_iter_t;
 
@@ -77,8 +74,8 @@ void lista_iter_destruir (lista_iter_t* iter);
 /* *****************************************************************
  *                    En desarrollo
  * *****************************************************************/
-void lista_imprimir_enteros(lista_t *lista);
-void lista_borrar_pos_pares(lista_t* lista);
-
+//void lista_imprimir_enteros(lista_t *lista);
+//void lista_borrar_pos_pares(lista_t* lista);
+void lista_iterar(lista_t *lista, bool visitar(void*, void*), void *extra);
 
 #endif //SOME_C_LISTA_H
