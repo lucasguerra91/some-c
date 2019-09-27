@@ -99,7 +99,7 @@ void* lista_iter_ver_actual (const lista_iter_t* iter){
 
 bool lista_iter_insertar (lista_iter_t* iter, void* dato){
 
-    if (!iter) return false;
+    if (!iter ) return false;
 
     nodo_t* nuevo = nodo_crear(dato);
 
@@ -112,7 +112,7 @@ bool lista_iter_insertar (lista_iter_t* iter, void* dato){
         iter->anterior->prox = nuevo;
         if (lista_iter_al_final(iter)) iter->lista->ultimo = nuevo;
     }
-    
+
     nuevo->prox = iter->actual;
     iter->actual = nuevo;
 
@@ -120,30 +120,6 @@ bool lista_iter_insertar (lista_iter_t* iter, void* dato){
     return true;
 }
 
-
-
-//bool lista_iter_insertar (lista_iter_t* iter, void* dato){
-//
-//    if (!iter) return false;
-//
-//    nodo_t* nuevo = nodo_crear(dato);
-//
-//    if (nuevo == NULL) return  false;
-//
-//    if (lista_esta_vacia(iter->lista) || iter->actual == iter->lista->primero){
-//        iter->lista->primero = nuevo;
-//        if (iter->actual == iter->lista->ultimo) iter->lista->ultimo = nuevo;
-//    }else if (lista_iter_al_final(iter)){
-//        iter->lista->ultimo = nuevo;
-//    } else{
-//        iter->anterior->prox = nuevo;
-//    }
-//
-//    nuevo->prox = iter->actual;
-//    iter->actual = nuevo;
-//    iter->lista->largo++;
-//    return true;
-//}
 
 void* lista_iter_borrar (lista_iter_t* iter){
 
@@ -321,21 +297,4 @@ void lista_destruir(lista_t *lista, void destruir_dato(void *)){
     }
     free(lista);
 }
-
-
-
-//// solo testing
-//void lista_imprimir_enteros(lista_t *lista){
-//
-//    nodo_t* indice = lista->primero;
-//
-//    //printf("[");  // Si abro corchetes acá, la lista se imprime como 00000000
-//    while (indice != NULL){
-//        printf("%d ", *(int *)indice->dato);
-//        indice = indice->prox;
-//    }
-//    //printf("\n");
-//
-//    free(indice);
-//}
 
