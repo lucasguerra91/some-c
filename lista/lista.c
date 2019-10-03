@@ -68,34 +68,24 @@ lista_iter_t* lista_iter_crear(lista_t* lista){
 }
 
 
-bool lista_iter_al_final(const lista_iter_t* iter){
 
-    if (!iter) return false;
-
-    if ((iter->anterior == iter->lista->ultimo) && (iter->actual == NULL)){
-        return true;
-    }
-
+bool lista_iter_al_final(const lista_iter_t *iter){
+    if(!iter || !iter->actual) return true;
     return false;
 }
 
 
-bool lista_iter_avanzar (lista_iter_t* iter){
 
-    if (!iter || lista_esta_vacia(iter->lista)) return false;
+bool lista_iter_avanzar(lista_iter_t *iter)
+{
+    if(lista_iter_al_final(iter)) return false;
 
-    if (lista_iter_al_final(iter)) return false;
-
-    if (iter->actual == iter->lista->ultimo){
-        iter->anterior = iter->actual;
-        iter->actual = NULL;
-    }else{
-        iter->anterior = iter->actual;
-        iter->actual = iter->actual->prox;
-    }
+    iter->anterior = iter->actual;
+    iter->actual = iter->actual->prox;
 
     return true;
 }
+
 
 void* lista_iter_ver_actual (const lista_iter_t* iter){
 
@@ -109,20 +99,18 @@ void* lista_iter_ver_actual (const lista_iter_t* iter){
 
 bool lista_iter_insertar (lista_iter_t* iter, void* dato){
 
-    if (!iter) return false;
+    if (!iter ) return false;
 
     nodo_t* nuevo = nodo_crear(dato);
 
     if (nuevo == NULL) return  false;
 
-
-    if (iter->actual == iter->lista->primero){
+    if (iter->actual == iter->lista->primero || lista_esta_vacia(iter->lista)){
         iter->lista->primero = nuevo;
         if (iter->actual == iter->lista->ultimo) iter->lista->ultimo = nuevo;
-    }else if (lista_iter_al_final(iter)){
-        iter->lista->ultimo = nuevo;
-    } else{
+    }else {
         iter->anterior->prox = nuevo;
+        if (lista_iter_al_final(iter)) iter->lista->ultimo = nuevo;
     }
 
     nuevo->prox = iter->actual;
@@ -309,23 +297,4 @@ void lista_destruir(lista_t *lista, void destruir_dato(void *)){
     }
     free(lista);
 }
-
-
-
-//// solo testing
-//void lista_imprimir_enteros(lista_t *lista){
-//
-//    nodo_t* indice = lista->primero;
-//
-//    //printf("[");  // Si abro corchetes acá, la lista se imprime como 00000000
-//    while (indice != NULL){
-//        printf("%d ", *(int *)indice->dato);
-//        indice = indice->prox;
-//    }
-//    //printf("\n");
-//
-//    free(indice);
-//}
-
-
 

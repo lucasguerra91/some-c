@@ -108,3 +108,100 @@ bool lista_esta_vacia(lista_t* lista){
 
     return lista->prim == NULL ;
 }
+
+
+
+
+
+//bool lista_iter_insertar (lista_iter_t* iter, void* dato){
+//
+//    if (!iter) return false;
+//
+//    nodo_t* nuevo = nodo_crear(dato);
+//
+//    if (nuevo == NULL) return  false;
+//
+//    if (lista_esta_vacia(iter->lista) || iter->actual == iter->lista->primero){
+//        iter->lista->primero = nuevo;
+//        if (iter->actual == iter->lista->ultimo) iter->lista->ultimo = nuevo;
+//    }else if (lista_iter_al_final(iter)){
+//        iter->lista->ultimo = nuevo;
+//    } else{
+//        iter->anterior->prox = nuevo;
+//    }
+//
+//    nuevo->prox = iter->actual;
+//    iter->actual = nuevo;
+//    iter->lista->largo++;
+//    return true;
+//}
+
+//void* lista_iter_borrar (lista_iter_t* iter){
+//
+//    if (!iter) return NULL;
+//
+//    if (lista_esta_vacia(iter->lista) || lista_iter_al_final(iter)) return NULL;
+//
+//    nodo_t* temp =  iter->actual;
+//    void* dato = temp->dato;
+//
+//    if (iter->actual == iter->lista->primero){
+//        iter->lista->primero = iter->actual->prox;
+//        if (iter->actual == iter->lista->ultimo) iter->lista->ultimo = iter->actual->prox;
+//
+//    }else if (iter->actual == iter->lista->ultimo){
+//        iter->lista->ultimo = iter->anterior;
+//    } else{
+//        iter->anterior->prox = iter->actual->prox;
+//    }
+//
+//    iter->actual = iter->actual->prox;
+//    free(temp);
+//    iter->lista->largo--;
+//    return dato;
+//}
+
+
+//bool lista_iter_al_final(const lista_iter_t* iter){
+//
+//    if (!iter) return false;
+//
+//    if ((iter->anterior == iter->lista->ultimo) && (iter->actual == NULL)){
+//        return true;
+//    }
+//
+//    return false;
+//}
+
+
+//bool lista_iter_avanzar (lista_iter_t* iter){
+//
+//    if (!iter || lista_esta_vacia(iter->lista)) return false;
+//
+//    if (lista_iter_al_final(iter)) return false;
+//
+//    if (iter->actual == iter->lista->ultimo){
+//        iter->anterior = iter->actual;
+//        iter->actual = NULL;
+//    }else{
+//        iter->anterior = iter->actual;
+//        iter->actual = iter->actual->prox;
+//    }
+//
+//    return true;
+//}
+//
+//bool lista_iter_avanzar (lista_iter_t* iter){
+//
+//    if (!iter || lista_esta_vacia(iter->lista)) return false;
+//
+//    if (lista_iter_al_final(iter)) return false;
+//
+//    iter->anterior = iter->actual;
+//    if (iter->actual){
+//        iter->actual = iter->actual->prox;
+//    }else{
+//        iter->actual = NULL;
+//    }
+//    return true;
+//}
