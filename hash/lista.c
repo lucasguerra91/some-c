@@ -42,11 +42,6 @@ nodo_t* nodo_crear(void* valor){
 }
 
 
-void mostrar_nodo(nodo_t* nodo){
-    printf("Valor %d", *(int *)nodo->dato);
-    // printf("Apunta a: %p", nodo->prox);
-}
-
 /* *****************************************************************
  *              PRIMITIVAS DEL ITERADOR EXTERNO
  * *****************************************************************/
