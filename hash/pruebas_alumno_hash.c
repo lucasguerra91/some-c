@@ -27,30 +27,36 @@ void prueba_guardar_hash(){
     hash_t* hash = hash_crear(NULL);
 
     char *clave1 = "perro", *valor1 = "guau";
-    char *clave2 = "gato", *valor2 = "miau";
+    char *clave1a = "perro", *valor1a = "guau2";
+    char *clave2 = "gatoncioasda", *valor2 = "miau";
     char *clave3 = "vaca", *valor3 = "mu";
 
+
+    printf("\n\nPRUEBAS DE CARGA DE DATOS EN HASH\n\n");
     /* Inserta 1 valor y luego lo borra */
     print_test("Prueba hash insertar clave1", hash_guardar(hash, clave1, valor1));
+    print_test("Prueba hash la cantidad de elementos es 1", hash_cantidad(hash) == 1);
+
+    print_test("Prueba hash insertar clave1a", hash_guardar(hash, clave1a, valor1a));
     print_test("Prueba hash la cantidad de elementos es 1", hash_cantidad(hash) == 1);
     //print_test("Prueba hash obtener clave1 es valor1", hash_obtener(hash, clave1) == valor1);
 
     //print_test("Prueba hash pertenece clave1, es true", hash_pertenece(hash, clave1));
-    //print_test("Prueba hash borrar clave1, es valor1", hash_borrar(hash, clave1) == valor1);
-    //print_test("Prueba hash la cantidad de elementos es 0", hash_cantidad(hash) == 0);
-
-    /* Inserta otros 2 valores y no los borra (se destruyen con el hash) */
-    print_test("Prueba hash insertar clave2", hash_guardar(hash, clave2, valor2));
-    print_test("Prueba hash la cantidad de elementos es 1", hash_cantidad(hash) == 1);
-//    print_test("Prueba hash obtener clave2 es valor2", hash_obtener(hash, clave2) == valor2);
-//    print_test("Prueba hash obtener clave2 es valor2", hash_obtener(hash, clave2) == valor2);
-    print_test("Prueba hash pertenece clave2, es true", hash_pertenece(hash, clave2));
-
-    print_test("Prueba hash insertar clave3", hash_guardar(hash, clave3, valor3));
+//    //print_test("Prueba hash borrar clave1, es valor1", hash_borrar(hash, clave1) == valor1);
+//    //print_test("Prueba hash la cantidad de elementos es 0", hash_cantidad(hash) == 0);
+//
+//    /* Inserta otros 2 valores y no los borra (se destruyen con el hash) */
+    print_test("\nPrueba hash insertar clave2", hash_guardar(hash, clave2, valor2));
     print_test("Prueba hash la cantidad de elementos es 2", hash_cantidad(hash) == 2);
-//    print_test("Prueba hash obtener clave3 es valor3", hash_obtener(hash, clave3) == valor3);
-//    print_test("Prueba hash obtener clave3 es valor3", hash_obtener(hash, clave3) == valor3);
-//    print_test("Prueba hash pertenece clave3, es true", hash_pertenece(hash, clave3));
+////    print_test("Prueba hash obtener clave2 es valor2", hash_obtener(hash, clave2) == valor2);
+////    print_test("Prueba hash obtener clave2 es valor2", hash_obtener(hash, clave2) == valor2);
+//    print_test("Prueba hash pertenece clave2, es true", hash_pertenece(hash, clave2));
+//
+    print_test("Prueba hash insertar clave3", hash_guardar(hash, clave3, valor3));
+    print_test("Prueba hash la cantidad de elementos es 3", hash_cantidad(hash) == 3);
+////    print_test("Prueba hash obtener clave3 es valor3", hash_obtener(hash, clave3) == valor3);
+////    print_test("Prueba hash obtener clave3 es valor3", hash_obtener(hash, clave3) == valor3);
+////    print_test("Prueba hash pertenece clave3, es true", hash_pertenece(hash, clave3));
 
     free(hash);
 }

@@ -1,6 +1,8 @@
 #include "hash.h"
 #include "lista.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 #define CAP_MIN 47
@@ -61,7 +63,7 @@ size_t hashing(char *str){
 
     while ((c = *(size_t*)str++))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-
+    printf("el hash es : %lu \n", hash % CAP_MIN);
     return hash % CAP_MIN;
 }
 
@@ -74,7 +76,6 @@ elemento_hash_t* elemento_crear(char *clave, void* dato){
 
     elemento_hash_t* elemento = malloc(sizeof(elemento_hash_t));
     if (elemento == NULL) return  NULL;
-
 
     elemento->clave = clave;
     elemento->dato = dato;
@@ -123,6 +124,8 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
     elemento_hash_t* elemento = elemento_crear(clave_cp, dato);
     if (elemento == NULL) return false;
 
+    //printf("El elemento es: \n clave : %s \n dato : %p", elemento->clave, elemento->dato);
+
     if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
 
     if (!lista_esta_vacia(hash->listas[indice])){
@@ -132,14 +135,19 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 
         elemento_hash_t* aux = (elemento_hash_t*)lista_iter_ver_actual(iterador);
 
-        while (!lista_iter_al_final(iterador) || aux->clave == clave_cp){
+        while (!lista_iter_al_final(iterador) || aux->clave != clave_cp){
+            if (aux->clave == clave_cp){
+                lista_iter_borrar(iterador);
+                hash->cantidad--;
+                break;
+            }
             lista_iter_avanzar(iterador);
             aux = (elemento_hash_t*)lista_iter_ver_actual(iterador);
         }
 
-        if (aux->clave == clave_cp) lista_iter_borrar(iterador);
         lista_iter_destruir(iterador);
     }
+
     //hash_insertar_ordenado(hash->listas[indice], elemento);
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
@@ -150,14 +158,19 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 
 void *hash_obtener(const hash_t *hash, const char *clave){
     char* clave_cp =  strdup(clave);
+    printf("rompe antes de crear iterador");
     size_t indice = hashing(clave_cp);
 
+    if (!hash->listas[indice]) return NULL;
+    printf("rompe antes de crear iterador");
     lista_iter_t* iter = lista_iter_crear(hash->listas[indice]);
-    if (iter == NULL) return NULL;
+    if (!iter) return NULL;
 
     elemento_hash_t* tmp = (elemento_hash_t*)lista_iter_ver_actual(iter);
-    printf("%p", tmp->dato);
+    //printf("%p", tmp->dato);
+
     while (!lista_iter_al_final(iter) || tmp->clave != clave_cp){
+        printf("entro al while");
         lista_iter_avanzar(iter);
         tmp = (elemento_hash_t*)lista_iter_ver_actual(iter);
     }
@@ -166,13 +179,14 @@ void *hash_obtener(const hash_t *hash, const char *clave){
         printf("%p", tmp->dato);
         return tmp->dato;
     }
-    free(tmp);
+    //free(tmp);
     return NULL;
 
 }
 
 
 bool hash_pertenece(const hash_t *hash, const char *clave){
+
     if (hash_obtener(hash, clave)) return true;
     return false;
 }
