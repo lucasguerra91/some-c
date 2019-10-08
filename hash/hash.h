@@ -16,14 +16,15 @@ typedef void (*hash_destruir_dato_t)(void *);
 
 /* Crea el hash
  */
-hash_t *hash_crear(hash_destruir_dato_t destruir_dato);
+hash_t *hash_crear(hash_destruir_dato_t destruir_dato);     // ok
 
 /* Guarda un elemento en el hash, si la clave ya se encuentra en la
  * estructura, la reemplaza. De no poder guardarlo devuelve false.
  * Pre: La estructura hash fue inicializada
  * Post: Se almacenó el par (clave, dato)
  */
-bool hash_guardar(hash_t *hash, const char *clave, void *dato);
+
+bool hash_guardar(hash_t *hash, const char *clave, void *dato);     // ok
 
 /* Borra un elemento del hash y devuelve el dato asociado.  Devuelve
  * NULL si el dato no estaba.
@@ -47,7 +48,7 @@ bool hash_pertenece(const hash_t *hash, const char *clave);
 /* Devuelve la cantidad de elementos del hash.
  * Pre: La estructura hash fue inicializada
  */
-size_t hash_cantidad(const hash_t *hash);
+size_t hash_cantidad(const hash_t *hash);       // ok
 
 /* Destruye la estructura liberando la memoria pedida y llamando a la función
  * destruir para cada par (clave, dato).
