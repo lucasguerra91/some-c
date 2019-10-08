@@ -35,6 +35,22 @@ char *strdup(const char *src) {
 }
 
 
+//bool hash_insertar_ordenado(lista_t* lista, elemento_hash_t* elemento){
+//
+//    lista_iter_t* iter = lista_iter_crear(lista);
+//    if (iter == NULL) return false;
+//
+//    elemento_hash_t* tmp = (elemento_hash_t*)lista_iter_ver_actual(iter);
+//
+//    while (!lista_iter_al_final(iter) || (elemento->clave > tmp->clave)){
+//        lista_iter_avanzar(iter);
+//        tmp = (elemento_hash_t*)lista_iter_ver_actual(iter);
+//    }
+//    lista_iter_insertar(iter, elemento);
+//    lista_iter_destruir(iter);
+//    free(tmp);
+//    return true;
+//}
 
 /* *****************************************************************
  *                    Función de Hashing
@@ -108,6 +124,7 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 
     if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
 
+
     if (!lista_esta_vacia(hash->listas[indice])){
 
         lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
@@ -123,14 +140,38 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
         if (aux->clave == clave) lista_iter_borrar(iterador);
         lista_iter_destruir(iterador);
     }
-
+    //hash_insertar_ordenado(hash->listas[indice], elemento);
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
     return true;
 }
 
 
+void *hash_obtener(const hash_t *hash, const char *clave){
+    char* clave_cp =  strdup(clave);
+    size_t indice = hashing(clave_cp);
+
+    lista_iter_t* iter = lista_iter_crear(hash->listas[indice]);
+    if (iter == NULL) return NULL;
+
+    elemento_hash_t* tmp = (elemento_hash_t*)lista_iter_ver_actual(iter);
+    printf("%p", tmp->dato);
+    while (!lista_iter_al_final(iter) || tmp->clave != clave_cp){
+        lista_iter_avanzar(iter);
+        tmp = (elemento_hash_t*)lista_iter_ver_actual(iter);
+    }
+
+    if (tmp->clave == clave_cp){
+        printf("%p", tmp->dato);
+        return tmp->dato;
+    }
+    free(tmp);
+    return NULL;
+
+}
 
 
-
-
+bool hash_pertenece(const hash_t *hash, const char *clave){
+    if (hash_obtener(hash, clave)) return true;
+    return false;
+}
