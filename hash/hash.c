@@ -55,7 +55,7 @@ char *strdup(const char *src) {
 /* *****************************************************************
  *                    Función de Hashing
  * *****************************************************************/
-size_t hashing(const char *str){
+size_t hashing(char *str){
     size_t hash = 5381;
     size_t c;
 
@@ -70,16 +70,15 @@ size_t hashing(const char *str){
  *                    Primitiva del elemento
  * *****************************************************************/
 
-elemento_hash_t* elemento_crear(const char *clave, void* dato){
+elemento_hash_t* elemento_crear(char *clave, void* dato){
 
     elemento_hash_t* elemento = malloc(sizeof(elemento_hash_t));
     if (elemento == NULL) return  NULL;
 
-    char* clave_cp =  strdup(clave);
-    elemento->clave = clave_cp;
+
+    elemento->clave = clave;
     elemento->dato = dato;
 
-    free(clave_cp);
     return elemento;
 
 }
@@ -117,32 +116,34 @@ size_t hash_cantidad(const hash_t *hash){
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 
-    size_t indice = hashing(clave);
+    char* clave_cp =  strdup(clave);
 
-    elemento_hash_t* elemento = elemento_crear(clave, dato);
+    size_t indice = hashing(clave_cp);
+
+    elemento_hash_t* elemento = elemento_crear(clave_cp, dato);
     if (elemento == NULL) return false;
 
     if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
-
 
     if (!lista_esta_vacia(hash->listas[indice])){
 
         lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
         if (!iterador) return false;
 
-        elemento_hash_t* aux = lista_iter_ver_actual(iterador);
+        elemento_hash_t* aux = (elemento_hash_t*)lista_iter_ver_actual(iterador);
 
-        while (!lista_iter_al_final(iterador) || aux->clave == clave){
+        while (!lista_iter_al_final(iterador) || aux->clave == clave_cp){
             lista_iter_avanzar(iterador);
-            aux = lista_iter_ver_actual(iterador);
+            aux = (elemento_hash_t*)lista_iter_ver_actual(iterador);
         }
 
-        if (aux->clave == clave) lista_iter_borrar(iterador);
+        if (aux->clave == clave_cp) lista_iter_borrar(iterador);
         lista_iter_destruir(iterador);
     }
     //hash_insertar_ordenado(hash->listas[indice], elemento);
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
+    free(clave_cp);
     return true;
 }
 
