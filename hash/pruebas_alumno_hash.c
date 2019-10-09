@@ -36,10 +36,11 @@ void prueba_guardar_hash(){
     /* Inserta 1 valor y luego lo borra */
     print_test("Prueba hash insertar clave1", hash_guardar(hash, clave1, valor1));
     print_test("Prueba hash la cantidad de elementos es 1", hash_cantidad(hash) == 1);
+    print_test("Prueba hash obtener clave1 es valor1", (char *)hash_obtener(hash, clave1) == valor1);
 
     print_test("Prueba hash insertar clave1a", hash_guardar(hash, clave1a, valor1a));
     print_test("Prueba hash la cantidad de elementos es 1", hash_cantidad(hash) == 1);
-    //print_test("Prueba hash obtener clave1 es valor1", hash_obtener(hash, clave1) == valor1);
+
 
     //print_test("Prueba hash pertenece clave1, es true", hash_pertenece(hash, clave1));
 //    //print_test("Prueba hash borrar clave1, es valor1", hash_borrar(hash, clave1) == valor1);

@@ -63,7 +63,7 @@ size_t hashing(char *str){
 
     while ((c = *(size_t*)str++))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-    printf("el hash es : %lu \n", hash % CAP_MIN);
+    //printf("el hash es : %lu \n", hash % CAP_MIN);
     return hash % CAP_MIN;
 }
 
@@ -135,7 +135,7 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 
         elemento_hash_t* aux = (elemento_hash_t*)lista_iter_ver_actual(iterador);
 
-        while (!lista_iter_al_final(iterador) || aux->clave != clave_cp){
+        while (!lista_iter_al_final(iterador)){
             if (aux->clave == clave_cp){
                 lista_iter_borrar(iterador);
                 hash->cantidad--;
@@ -151,36 +151,46 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
     //hash_insertar_ordenado(hash->listas[indice], elemento);
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
+    free(elemento);
     free(clave_cp);
     return true;
 }
 
 
 void *hash_obtener(const hash_t *hash, const char *clave){
+
     char* clave_cp =  strdup(clave);
-    printf("rompe antes de crear iterador");
     size_t indice = hashing(clave_cp);
 
     if (!hash->listas[indice]) return NULL;
-    printf("rompe antes de crear iterador");
+
+
     lista_iter_t* iter = lista_iter_crear(hash->listas[indice]);
     if (!iter) return NULL;
 
     elemento_hash_t* tmp = (elemento_hash_t*)lista_iter_ver_actual(iter);
-    //printf("%p", tmp->dato);
 
-    while (!lista_iter_al_final(iter) || tmp->clave != clave_cp){
-        printf("entro al while");
+
+    while (!lista_iter_al_final(iter)){
+        if (tmp->clave == clave_cp) {
+            void* dato = tmp.
+            break;
+        }
         lista_iter_avanzar(iter);
         tmp = (elemento_hash_t*)lista_iter_ver_actual(iter);
     }
 
-    if (tmp->clave == clave_cp){
-        printf("%p", tmp->dato);
-        return tmp->dato;
+    void* dato;
+    if (tmp){
+        dato = tmp->dato;
+    } else{
+        dato = NULL;
     }
-    //free(tmp);
-    return NULL;
+
+    free(tmp);
+    free(clave_cp);
+    printf("%s", (char *)dato);
+    return dato;
 
 }
 
