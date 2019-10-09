@@ -77,31 +77,30 @@ void* elemento_en_lista(const hash_t *hash,const char *clave){
 
     if (!hash->listas[indice] || lista_esta_vacia(hash->listas[indice])) return NULL;
     
-    lista_iter_t* iter = lista_iter_crear(hash->listas[indice]);
-    if (!iter) return NULL;
+    lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
+    if (!iterador) return NULL;
 
-    void* dato = NULL;
+    void* dato;
 
     printf("indice es %lu", indice);
-    elemento_hash_t* elemento = lista_iter_ver_actual(iter);
-    printf("\nDEBUGG - El dato es: %s\n", (char *)elemento->clave);
+    elemento_hash_t* aux;
 
-    int i = 1;
-    while (!lista_iter_al_final(iter)){
-        printf("\nDEBUGG - entro al while\n");
 
-        
-        if (strcmp(elemento->clave, clave) == 0){
-            dato = elemento->dato;
+    while (!lista_iter_al_final(iterador)){
+
+        aux = lista_iter_ver_actual(iterador);
+
+        if (strcmp(aux->clave, clave) == 0){
+            dato = aux->dato;
             break;
         }
-        printf("avanzo %d veces", i);
-        i++;
-        lista_iter_avanzar(iter);
+        lista_iter_avanzar(iterador);
+
     }
 
-    lista_iter_destruir(iter);
-    printf("\nDEBUGG - Saliendo de elemento en lista. El dato es: %s\n", (char *)elemento->dato);
+    lista_iter_destruir(iterador);
+
+    printf("\nDEBUGG - Saliendo de elemento en lista. El dato es: %s\n", (char *)dato);
     return dato;
 }
 
@@ -176,11 +175,11 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 
         lista_iter_destruir(iterador);
     }
-    
+
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
-    free(elemento);
-    free(clave_cp);
+    //free(elemento);
+    //free(clave_cp);
     return true;
 }
 
