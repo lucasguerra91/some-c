@@ -205,7 +205,6 @@ void *hash_borrar(hash_t *hash, const char *clave){
 }
 
 void hash_destruir(hash_t *hash){
-
     for (size_t i = 0; i < hash->capacidad; i++){
         if (hash->listas[i] != NULL){
             if(!hash->destruir_dato){
