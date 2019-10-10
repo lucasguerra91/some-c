@@ -205,10 +205,22 @@ void *hash_borrar(hash_t *hash, const char *clave){
 }
 
 void hash_destruir(hash_t *hash){
-    if (!hash->destruir_dato){
-        for (size_t i = 0; i < hash->capacidad; i++){
-            lista_destruir(hash->listas[i], hash->destruir_dato);
+
+    for (size_t i = 0; i < hash->capacidad; i++){
+        if (hash->listas[i] != NULL){
+            if(!hash->destruir_dato){
+                lista_destruir(hash->listas[i], NULL);
+            }else{
+                while (!lista_esta_vacia(hash->listas[i])){
+                    elemento_hash_t* elemento = lista_borrar_primero(hash->listas[i]);
+                    hash->destruir_dato(elemento->dato);
+                    free(elemento->clave);
+                    free(elemento);
+                }
+                free(hash->listas[i]);
+            }
         }
     }
+    free(hash->listas);
     free(hash);
 }
