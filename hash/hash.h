@@ -32,18 +32,18 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato);     // ok
  * Post: El elemento fue borrado de la estructura y se lo devolvió,
  * en el caso de que estuviera guardado.
  */
-void *hash_borrar(hash_t *hash, const char *clave);
+void *hash_borrar(hash_t *hash, const char *clave);  // ok
 
 /* Obtiene el valor de un elemento del hash, si la clave no se encuentra
  * devuelve NULL.
  * Pre: La estructura hash fue inicializada
  */
-void *hash_obtener(const hash_t *hash, const char *clave);
+void *hash_obtener(const hash_t *hash, const char *clave);  // ok
 
 /* Determina si clave pertenece o no al hash.
  * Pre: La estructura hash fue inicializada
  */
-bool hash_pertenece(const hash_t *hash, const char *clave);
+bool hash_pertenece(const hash_t *hash, const char *clave);  // ok
 
 /* Devuelve la cantidad de elementos del hash.
  * Pre: La estructura hash fue inicializada
