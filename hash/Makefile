@@ -5,4 +5,4 @@ run: build
 	./pruebas
 
 valgrind:
-	valgrind --leak-check=full --tool=memcheck  --track-origins=yes --show-reachable=yes -v ./pruebas
+	valgrind --leak-check=full --error-limit=no --tool=memcheck  --track-origins=yes --show-reachable=yes -v ./pruebas
