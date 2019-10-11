@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 
-#define CAP_MIN 23
+#define CAP_MIN 17
 
 
 /* -----------------------------------------------------------------
@@ -74,11 +74,11 @@ size_t hashing(const char *clave, size_t tam){
  * -----------------------------------------------------------------*/
 
 elemento_hash_t* elemento_crear(char *clave, void* dato){
-    char* clave_cp =  strdup(clave);
+    //char* clave_cp =  strdup(clave);
     elemento_hash_t* elemento = malloc(sizeof(elemento_hash_t));
     if (elemento == NULL) return  NULL;
 
-    elemento->clave = clave_cp;
+    elemento->clave = clave;
     elemento->dato = dato;
     // free(clave_cp); Esto rompe
     return elemento;
@@ -102,7 +102,7 @@ elemento_hash_t* elemento_en_lista(const hash_t *hash,const char *clave){
 
         elemento = lista_iter_ver_actual(iterador);
 
-        if (elemento->clave == clave){
+        if (strcmp(elemento->clave, clave) == 0){
             break;
         }
         lista_iter_avanzar(iterador);
@@ -136,49 +136,36 @@ bool hash_esta_vacio(const hash_t* hash){
 }
 
 bool hash_redimensionar(hash_t* hash){
-    //printf("\nDEBUGG - Entró a dimensionar\n");
-    size_t tam_nuevo = hash->capacidad * 7;
+    
+    size_t tam_nuevo = hash->capacidad * CAP_MIN;
 
 
     hash_t* hash_nuevo = malloc(sizeof(hash_t));
     hash_nuevo->listas = malloc(tam_nuevo * sizeof(lista_t*));
     if (!hash_nuevo->listas)  return false;
-    //printf("\nDEBUGG - Creó un nuevo array de listas\n");
+    
+    for (size_t i = 0; i < tam_nuevo; i++) hash_nuevo->listas[i] = NULL; 
     
     
-    for (size_t i = 0; i < tam_nuevo; i++){ 
-        
-        //printf("\nDEBUGG - Entró al for que inicia las listas\n");
-        hash_nuevo->listas[i] = NULL; 
-        //printf("\nDEBUGG - Inició la lista %lu\n", i);
-    }
-    //printf("\nDEBUGG - Llenó de Nulls la lista\n");
     
     hash_nuevo->cantidad = hash->cantidad;
     hash_nuevo->capacidad = tam_nuevo;
     hash_nuevo->destruir_dato = hash->destruir_dato;
 
-    // Migro los elementos de la tabla anterior
     for (size_t i = 0; i < hash->capacidad; i++){
 
         while (!lista_esta_vacia(hash->listas[i])){
-            //printf("\nDEBUGG - Entro al while\n");
             elemento_hash_t* elemento = lista_borrar_primero(hash->listas[i]);
             char* clave = elemento->clave;
             void* dato = elemento->dato;
             if (!hash_guardar(hash_nuevo, clave, dato)) return false;
         }
-        //printf("\nDEBUGG - Salió del while\n");
     }
-    
-    //printf("\nDEBUGG - Salió del for\n");
     
     hash = hash_nuevo;
     
-    //printf("\nDEBUGG - Sale de redimensionar\n");
     return true;
 }
-
 
 
 /* -----------------------------------------------------------------
@@ -217,44 +204,28 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
     
     float carga = (float)hash->cantidad / (float)hash->capacidad;
     
+    // NO TOCAR
     if (carga >= 1){
-        if(!hash_redimensionar(hash)) {
-            //printf("\nDEBUGG - Fallo redimensionar\n");
-            return false;
-        }
-        //printf("\nDEBUGG - Redimensiono\n");
+        if(!hash_redimensionar(hash)) return false;
     }
     
-    //printf("\nDEBUGG - Salio del control de carga\n");
-
     size_t indice = hashing(clave, hash->capacidad);
     char* clave_cp =  strdup(clave);
     
-    //printf("\nDEBUGG - Copió la clave\n");
-
-    // Si la lista no está vacía, reviso si ya está y lo actualizo
+    if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
+    
     if (!lista_esta_vacia(hash->listas[indice])){
-        //printf("\nDEBUGG - Entró al if de lista no_vacia\n");
         if(actualizar_elemento(hash, clave, dato)){
-            //printf("\nDEBUGG - Actualizó el dato\n");
             free(clave_cp);
             return true;
         }
     }
-    //printf("\nDEBUGG - Pasó el if de lista no vacia\n");
-    // inicio la lista en caso de que sea NULL (primer estado)
-    if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
     
     elemento_hash_t* elemento = elemento_crear(clave_cp, dato);
-    if (elemento == NULL) {
-        printf("\nDEBUGG - Salio por el elemento == NULL\n");
-        return false;
-    }
-
+    if (elemento == NULL) return false;
+    
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
-
-    //printf("\nDEBUGG - Guardó un dato\n");
    
     return true;
 }
@@ -364,7 +335,7 @@ hash_iter_t *hash_iter_crear(const hash_t *hash){
 
     iter->hash = hash;
     size_t inicial = 0;
-    
+
     if (hash_esta_vacio(iter->hash)){
         iter->indice = inicial;
         iter->iter_lista = NULL;
@@ -377,57 +348,34 @@ hash_iter_t *hash_iter_crear(const hash_t *hash){
     return iter;
 }
 
-
-// bool hash_iter_avanzar(hash_iter_t *iter){
-    
-//     if (!hash_iter_al_final(iter)){
-//         lista_iter_avanzar(iter->iter_lista);
-        
-//         if (!lista_iter_al_final(iter->iter_lista)) return true;
-        
-//         lista_iter_destruir(iter->iter_lista);
-//         iter->indice = iter_buscar_indice(iter->hash, iter->indice);
-
-//         lista_iter_t* iter_lista_nuevo = lista_iter_crear(iter->hash->listas[iter->indice]);
-//         if (iter_lista_nuevo){
-//             printf("\nDEBUGG - No pudo crear la lista\n");
-//             return false;
-//         }
-//         iter->iter_lista = iter_lista_nuevo;
-//         return true;
-
-//     }
-//     printf("\nDEBUGG - Salio como si estuviera al final\n");
-//     return false;
-// }
-
-
 bool hash_iter_avanzar(hash_iter_t *iter){
-    // falta preguntar si no estoy en el ultimo elemento hash[capacidad] && iter_al_final
-    if (hash_esta_vacio(iter->hash)) return false;
-    
-    lista_iter_avanzar(iter->iter_lista);
+    if (!iter) return false;
 
-    if (hash_iter_al_final(iter)) return false;
-
-    if (!lista_iter_al_final(iter->iter_lista)){
+    if (!hash_iter_al_final(iter)){
         lista_iter_avanzar(iter->iter_lista);
+
+        if (!lista_iter_al_final(iter->iter_lista)) return true;
+
+        lista_iter_destruir(iter->iter_lista);
+
+        if (hash_iter_al_final(iter)){
+            iter->iter_lista = NULL;
+            return true;
+        } 
+
+        iter->indice = iter_buscar_indice(iter->hash, iter->indice);
+        if (!iter->indice) return false;
+        iter->iter_lista = lista_iter_crear(iter->hash->listas[iter->indice]);
         return true;
     }
-
-    lista_iter_destruir(iter->iter_lista);
-    iter->indice = iter_buscar_indice(iter->hash, iter->indice);
-
-    iter->iter_lista = lista_iter_crear(iter->hash->listas[iter->indice]);
-    if (!iter->iter_lista) return false;
-
-    return true;
+    return false;
 }
+
 
 
 const char *hash_iter_ver_actual(const hash_iter_t *iter){
     
-    if (hash_iter_al_final(iter)) return NULL;
+    if (hash_esta_vacio(iter->hash)) return NULL;
 
     elemento_hash_t* aux = lista_iter_ver_actual(iter->iter_lista);
     return aux->clave;
@@ -435,14 +383,8 @@ const char *hash_iter_ver_actual(const hash_iter_t *iter){
 
 
 bool hash_iter_al_final(const hash_iter_t *iter){
-    
-    if (hash_esta_vacio(iter->hash) || !iter) return true;
-
-    if (iter->indice == iter->hash->capacidad){
-        size_t proximo = iter_buscar_indice(iter->hash, iter->indice);
-        if (proximo == 0 || !iter->iter_lista) return true;
-    }
-    
+    if (!iter || hash_esta_vacio(iter->hash)) return true;
+    if(!iter->iter_lista) return true;
     return false;
 }
 
