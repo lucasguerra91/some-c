@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 
-#define CAP_MIN 47
+#define CAP_MIN 23
 
 
 /* -----------------------------------------------------------------
@@ -38,12 +38,18 @@ struct hash_iter{
                 Funciones adicionales
  * -----------------------------------------------------------------*/
 
-char *strdup(const char *src) {
-    char *dst = malloc(strlen (src) + 1);  // Space for length plus nul
-    if (dst == NULL) return NULL;          // No memory
-    strcpy(dst, src);                      // Copy the characters
-    return dst;                            // Return the new string
+// char *strdup(const char *src) {
+//     char *dst = malloc(strlen (src) + 1);  // Space for length plus nul
+//     if (dst == NULL) return NULL;          // No memory
+//     strcpy(dst, src);                      // Copy the characters
+//     return dst;                            // Return the new string
+// }
+
+char *strdup(const char *clave) {
+    char *clave_copia = strcpy(malloc(strlen(clave) + 1), clave);
+    return clave_copia;
 }
+
 
 
 
@@ -67,7 +73,7 @@ size_t hashing(const char *clave, size_t tam){
              Primitivas del elemento
  * -----------------------------------------------------------------*/
 
-elemento_hash_t* elemento_crear(const char *clave, void* dato){
+elemento_hash_t* elemento_crear(char *clave, void* dato){
     char* clave_cp =  strdup(clave);
     elemento_hash_t* elemento = malloc(sizeof(elemento_hash_t));
     if (elemento == NULL) return  NULL;
@@ -89,32 +95,33 @@ elemento_hash_t* elemento_en_lista(const hash_t *hash,const char *clave){
     lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
     if (!iterador) return NULL;
 
-    elemento_hash_t* aux = NULL;
+    elemento_hash_t* elemento = NULL;
+
 
     while (!lista_iter_al_final(iterador)){
 
-        aux = lista_iter_ver_actual(iterador);
+        elemento = lista_iter_ver_actual(iterador);
 
-        if (aux->clave == clave){
+        if (elemento->clave == clave){
             break;
         }
         lista_iter_avanzar(iterador);
     }
 
     lista_iter_destruir(iterador);
-
-    return aux;
+    
+    return elemento;
 }
 
 
 bool actualizar_elemento(hash_t* hash, const char* clave, void* dato_nuevo){
     elemento_hash_t* elemento = elemento_en_lista(hash, clave);
-    if(elemento){    
-        if(hash->destruir_dato) hash->destruir_dato(elemento->dato);
-        elemento->dato = dato_nuevo;
-        return true;
-    }
-    return false;
+    if(!elemento) return false;
+    
+    if(hash->destruir_dato) hash->destruir_dato(elemento->dato);
+    elemento->dato = dato_nuevo;
+    return true;
+    
 }
 
 
@@ -128,44 +135,50 @@ bool hash_esta_vacio(const hash_t* hash){
     return false;
 }
 
-
-double hash_factor_carga(const hash_t* hash){
-    return (double)(hash->cantidad / hash->capacidad);
-}
-
-
 bool hash_redimensionar(hash_t* hash){
+    //printf("\nDEBUGG - Entró a dimensionar\n");
     size_t tam_nuevo = hash->capacidad * 7;
 
-    hash_t* hash_nuevo = malloc(tam_nuevo * sizeof(hash_t));
-    if (!hash_nuevo){
-        free(hash_nuevo);
-        return false;
-    } 
 
+    hash_t* hash_nuevo = malloc(sizeof(hash_t));
+    hash_nuevo->listas = malloc(tam_nuevo * sizeof(lista_t*));
+    if (!hash_nuevo->listas)  return false;
+    //printf("\nDEBUGG - Creó un nuevo array de listas\n");
+    
+    
     for (size_t i = 0; i < tam_nuevo; i++){ 
+        
+        //printf("\nDEBUGG - Entró al for que inicia las listas\n");
         hash_nuevo->listas[i] = NULL; 
+        //printf("\nDEBUGG - Inició la lista %lu\n", i);
     }
-
+    //printf("\nDEBUGG - Llenó de Nulls la lista\n");
+    
     hash_nuevo->cantidad = hash->cantidad;
     hash_nuevo->capacidad = tam_nuevo;
     hash_nuevo->destruir_dato = hash->destruir_dato;
 
-    for (size_t i = 0; i < hash->capacidad; i++)
-    {
+    // Migro los elementos de la tabla anterior
+    for (size_t i = 0; i < hash->capacidad; i++){
+
         while (!lista_esta_vacia(hash->listas[i])){
+            //printf("\nDEBUGG - Entro al while\n");
             elemento_hash_t* elemento = lista_borrar_primero(hash->listas[i]);
             char* clave = elemento->clave;
             void* dato = elemento->dato;
-            hash_guardar(hash_nuevo, clave, dato);
+            if (!hash_guardar(hash_nuevo, clave, dato)) return false;
         }
-        
+        //printf("\nDEBUGG - Salió del while\n");
     }
-    hash_t* tmp = hash;
+    
+    //printf("\nDEBUGG - Salió del for\n");
+    
     hash = hash_nuevo;
-    hash_destruir(tmp);
+    
+    //printf("\nDEBUGG - Sale de redimensionar\n");
     return true;
 }
+
 
 
 /* -----------------------------------------------------------------
@@ -201,27 +214,44 @@ size_t hash_cantidad(const hash_t *hash){
 
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){
-
-    /* if (hash_factor_carga(hash) >= 1){
-        if (!hash_redimensionar(hash)) return false;
-    }  */
     
-    size_t indice = hashing(clave, hash->capacidad);
-
-    if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
-
-    if (!lista_esta_vacia(hash->listas[indice])){
-        if(actualizar_elemento(hash, clave, dato)) return true;
+    float carga = (float)hash->cantidad / (float)hash->capacidad;
+    
+    if (carga >= 1){
+        if(!hash_redimensionar(hash)) {
+            //printf("\nDEBUGG - Fallo redimensionar\n");
+            return false;
+        }
+        //printf("\nDEBUGG - Redimensiono\n");
     }
-
     
-    // char* clave_cp =  strdup(clave);
-    elemento_hash_t* elemento = elemento_crear(clave, dato);
+    //printf("\nDEBUGG - Salio del control de carga\n");
+
+    size_t indice = hashing(clave, hash->capacidad);
+    char* clave_cp =  strdup(clave);
+    
+    //printf("\nDEBUGG - Copió la clave\n");
+
+    // Si la lista no está vacía, reviso si ya está y lo actualizo
+    if (!lista_esta_vacia(hash->listas[indice])){
+        //printf("\nDEBUGG - Entró al if de lista no_vacia\n");
+        if(actualizar_elemento(hash, clave, dato)){
+            //printf("\nDEBUGG - Actualizó el dato\n");
+            free(clave_cp);
+            return true;
+        }
+    }
+    //printf("\nDEBUGG - Pasó el if de lista no vacia\n");
+    // inicio la lista en caso de que sea NULL (primer estado)
+    if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
+    
+    elemento_hash_t* elemento = elemento_crear(clave_cp, dato);
     if (elemento == NULL) return false;
 
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
 
+   
     return true;
 }
 
@@ -239,12 +269,14 @@ void *hash_obtener(const hash_t *hash, const char *clave){
 bool hash_pertenece(const hash_t *hash, const char *clave){
     if (hash_esta_vacio(hash)) return false;
     elemento_hash_t* elemento = elemento_en_lista(hash, clave);
-    return elemento;
+    return (elemento);
 }
 
 
 void *hash_borrar(hash_t *hash, const char *clave){
     
+    if (hash_esta_vacio(hash)) return NULL; // Por si se vació
+
     size_t indice = hashing(clave, hash->capacidad);
 
     lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
@@ -261,6 +293,8 @@ void *hash_borrar(hash_t *hash, const char *clave){
             lista_iter_borrar(iterador);
             hash->cantidad--;
             dato = aux->dato;
+            free(aux->clave);
+            free(aux);
             break;
         }
         lista_iter_avanzar(iterador);
@@ -269,8 +303,12 @@ void *hash_borrar(hash_t *hash, const char *clave){
 
     lista_iter_destruir(iterador);
 
-    return dato;
+    if (lista_esta_vacia(hash->listas[indice])){
+        lista_destruir(hash->listas[indice], NULL);
+        hash->listas[indice] = NULL;
+    } 
 
+    return dato;
 }
 
 
@@ -301,7 +339,7 @@ void hash_destruir(hash_t *hash){
 size_t iter_buscar_indice(const hash_t* hash, size_t indice_actual){
     
     for (size_t i = indice_actual; i < hash->capacidad; i++){
-        if (!lista_esta_vacia(hash->listas[i])){
+        if (hash->listas[i] != NULL){
             return i;
         }
     }
@@ -341,6 +379,8 @@ bool hash_iter_avanzar(hash_iter_t *iter){
     // falta preguntar si no estoy en el ultimo elemento hash[capacidad] && iter_al_final
     if (hash_esta_vacio(iter->hash)) return false;
     
+    if (hash_iter_al_final(iter)) return false;
+
     if (!lista_iter_al_final(iter->iter_lista)){
         lista_iter_avanzar(iter->iter_lista);
         return true;
@@ -380,7 +420,7 @@ bool hash_iter_al_final(const hash_iter_t *iter){
 
 
 void hash_iter_destruir(hash_iter_t* iter){
-    if (iter->iter_lista){
+    if (iter && iter->iter_lista){
         lista_iter_destruir(iter->iter_lista);
     }
     free(iter);
