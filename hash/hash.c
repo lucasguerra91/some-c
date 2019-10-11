@@ -246,11 +246,15 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
     if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
     
     elemento_hash_t* elemento = elemento_crear(clave_cp, dato);
-    if (elemento == NULL) return false;
+    if (elemento == NULL) {
+        printf("\nDEBUGG - Salio por el elemento == NULL\n");
+        return false;
+    }
 
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
 
+    //printf("\nDEBUGG - Guardó un dato\n");
    
     return true;
 }
@@ -275,7 +279,7 @@ bool hash_pertenece(const hash_t *hash, const char *clave){
 
 void *hash_borrar(hash_t *hash, const char *clave){
     
-    if (hash_esta_vacio(hash)) return NULL; // Por si se vació
+    //if (hash_esta_vacio(hash)) return NULL; // Por si se vació
 
     size_t indice = hashing(clave, hash->capacidad);
 
@@ -343,7 +347,7 @@ size_t iter_buscar_indice(const hash_t* hash, size_t indice_actual){
             return i;
         }
     }
-    return hash->capacidad;
+    return 0;
 }
 
 
@@ -369,16 +373,41 @@ hash_iter_t *hash_iter_crear(const hash_t *hash){
         iter->iter_lista = lista_iter_crear(iter->hash->listas[iter->indice]);
         if(!iter->iter_lista) return NULL;
     }
-    
 
     return iter;
 }
+
+
+// bool hash_iter_avanzar(hash_iter_t *iter){
+    
+//     if (!hash_iter_al_final(iter)){
+//         lista_iter_avanzar(iter->iter_lista);
+        
+//         if (!lista_iter_al_final(iter->iter_lista)) return true;
+        
+//         lista_iter_destruir(iter->iter_lista);
+//         iter->indice = iter_buscar_indice(iter->hash, iter->indice);
+
+//         lista_iter_t* iter_lista_nuevo = lista_iter_crear(iter->hash->listas[iter->indice]);
+//         if (iter_lista_nuevo){
+//             printf("\nDEBUGG - No pudo crear la lista\n");
+//             return false;
+//         }
+//         iter->iter_lista = iter_lista_nuevo;
+//         return true;
+
+//     }
+//     printf("\nDEBUGG - Salio como si estuviera al final\n");
+//     return false;
+// }
 
 
 bool hash_iter_avanzar(hash_iter_t *iter){
     // falta preguntar si no estoy en el ultimo elemento hash[capacidad] && iter_al_final
     if (hash_esta_vacio(iter->hash)) return false;
     
+    lista_iter_avanzar(iter->iter_lista);
+
     if (hash_iter_al_final(iter)) return false;
 
     if (!lista_iter_al_final(iter->iter_lista)){
@@ -407,14 +436,13 @@ const char *hash_iter_ver_actual(const hash_iter_t *iter){
 
 bool hash_iter_al_final(const hash_iter_t *iter){
     
-    if (hash_esta_vacio(iter->hash)) return true;
+    if (hash_esta_vacio(iter->hash) || !iter) return true;
 
     if (iter->indice == iter->hash->capacidad){
-        if (lista_iter_al_final(iter->iter_lista) || iter->hash->listas[iter->indice] == NULL){
-            return true;
-        }
+        size_t proximo = iter_buscar_indice(iter->hash, iter->indice);
+        if (proximo == 0 || !iter->iter_lista) return true;
     }
-
+    
     return false;
 }
 

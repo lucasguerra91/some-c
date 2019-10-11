@@ -237,7 +237,7 @@ static void prueba_hash_volumen(size_t largo, bool debug)
     
     if (debug) print_test("\n\tPrueba hash almacenar muchos elementos", ok);
     if (debug) print_test("\tPrueba hash la cantidad de elementos es correcta", hash_cantidad(hash) == largo);
-
+    printf("\nDEBUGG - Cantidad es = %lu y el largo es = %lu", hash_cantidad(hash), largo);
     /* Verifica que devuelva los valores correctos */
     for (size_t i = 0; i < largo; i++) {
         ok = hash_pertenece(hash, claves[i]);
@@ -257,6 +257,7 @@ static void prueba_hash_volumen(size_t largo, bool debug)
 
     if (debug) print_test("\n\tPrueba hash borrar muchos elementos", ok);
     if (debug) print_test("\tPrueba hash la cantidad de elementos es 0", hash_cantidad(hash) == 0);
+    printf("\nDEBUGG - Cantidad es = %lu", hash_cantidad(hash));
 
     /* Destruye el hash y crea uno nuevo que sí libera */
     hash_destruir(hash);
@@ -312,7 +313,7 @@ static void prueba_hash_iterar()
     print_test("\tPrueba hash iterador avanzar es true", hash_iter_avanzar(iter));
     print_test("\tPrueba hash iterador esta al final, es false", !hash_iter_al_final(iter));
 
-    /* Segundo valor */
+     /* Segundo valor */
     clave = hash_iter_ver_actual(iter);
     indice = buscar(clave, claves, sizeof(claves) / sizeof(char *));
     print_test("\n\tPrueba hash iterador ver actual, es una clave valida", indice != -1);
@@ -328,11 +329,11 @@ static void prueba_hash_iterar()
     hash_iter_avanzar(iter);
     print_test("\tPrueba hash iterador esta al final, es true", hash_iter_al_final(iter));
 
-    /* Vuelve a tratar de avanzar, por las dudas */
+    // /* Vuelve a tratar de avanzar, por las dudas */
     print_test("\n\tPrueba hash iterador ver actual, es NULL", !hash_iter_ver_actual(iter));
     print_test("\tPrueba hash iterador avanzar es false", !hash_iter_avanzar(iter));
     print_test("\tPrueba hash iterador esta al final, es true", hash_iter_al_final(iter));
-
+ 
     hash_iter_destruir(iter);
     hash_destruir(hash);
 }
@@ -417,9 +418,9 @@ void pruebas_hash_catedra()
     prueba_hash_borrar();
     prueba_hash_clave_vacia();
     prueba_hash_valor_null();
-    prueba_hash_volumen(5000, true);
+    prueba_hash_volumen(50, true);
     prueba_hash_iterar();
-    prueba_hash_iterar_volumen(5000);
+    prueba_hash_iterar_volumen(50);
 }
 
 void pruebas_volumen_catedra(size_t largo)
