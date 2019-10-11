@@ -4,9 +4,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define ANSI_COLOR_RED     "\x1b[1;31m"
+#define ANSI_COLOR_GREEN   "\x1b[1,32m"
+#define ANSI_COLOR_YELLOW  "\x1b[1;33m"
+#define ANSI_COLOR_BLUE    "\x1b[1;34m"
+#define ANSI_COLOR_MAGENTA "\x1b[1;35m"
+#define ANSI_COLOR_CYAN    "\x1b[1;36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
-#define CAP_MIN 17
+// MENSAGJE DEBUGG
+//printf(ANSI_COLOR_YELLOW"\n\tDEBUGG - Se generó el hash: %lu \n"ANSI_COLOR_RESET "\n", hash % tam);
 
+#define CAP_MIN 23
+#define REDIM 3
 
 /* -----------------------------------------------------------------
                 Estructuras del Hash y sus elementos
@@ -38,32 +48,23 @@ struct hash_iter{
                 Funciones adicionales
  * -----------------------------------------------------------------*/
 
-// char *strdup(const char *src) {
-//     char *dst = malloc(strlen (src) + 1);  // Space for length plus nul
-//     if (dst == NULL) return NULL;          // No memory
-//     strcpy(dst, src);                      // Copy the characters
-//     return dst;                            // Return the new string
-// }
-
 char *strdup(const char *clave) {
     char *clave_copia = strcpy(malloc(strlen(clave) + 1), clave);
     return clave_copia;
 }
 
 
-
-
 /* -----------------------------------------------------------------
              Funciones de Hashing
  * -----------------------------------------------------------------*/
 size_t hashing(const char *clave, size_t tam){
-
+    
     size_t hash = 5381;
     size_t c;
 
     while ((c = *(size_t*)clave++))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-
+    //printf(ANSI_COLOR_YELLOW"\n\tDEBUGG - Se generó el hash: %lu para la clave: %s\n"ANSI_COLOR_RESET "\n", hash % tam, clave);
     return hash % tam;
 
 }
@@ -74,15 +75,14 @@ size_t hashing(const char *clave, size_t tam){
  * -----------------------------------------------------------------*/
 
 elemento_hash_t* elemento_crear(char *clave, void* dato){
-    //char* clave_cp =  strdup(clave);
+    
     elemento_hash_t* elemento = malloc(sizeof(elemento_hash_t));
     if (elemento == NULL) return  NULL;
 
     elemento->clave = clave;
     elemento->dato = dato;
-    // free(clave_cp); Esto rompe
+    
     return elemento;
-
 }
 
 
@@ -90,36 +90,39 @@ elemento_hash_t* elemento_en_lista(const hash_t *hash,const char *clave){
 
     size_t indice = hashing(clave, hash->capacidad);
 
-    if (!hash->listas[indice] || lista_esta_vacia(hash->listas[indice])) return NULL;
+    if ((!hash->listas[indice]) || (lista_esta_vacia(hash->listas[indice]))) return NULL;
 
     lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
     if (!iterador) return NULL;
 
-    elemento_hash_t* elemento = NULL;
-
+    
+    elemento_hash_t* elemento;
 
     while (!lista_iter_al_final(iterador)){
 
         elemento = lista_iter_ver_actual(iterador);
 
-        if (strcmp(elemento->clave, clave) == 0){
+        if (strcmp(elemento->clave, clave) == 0) {
+            printf(ANSI_COLOR_YELLOW"\n\tDEBUGG - Comparó %s contra %s \n"ANSI_COLOR_RESET "\n", elemento->clave, clave);
             break;
         }
+        
         lista_iter_avanzar(iterador);
     }
 
     lista_iter_destruir(iterador);
     
-    return elemento;
+    return elemento ? elemento : NULL;
 }
 
 
 bool actualizar_elemento(hash_t* hash, const char* clave, void* dato_nuevo){
     elemento_hash_t* elemento = elemento_en_lista(hash, clave);
-    if(!elemento) return false;
+    if(elemento == NULL) return false;
     
     if(hash->destruir_dato) hash->destruir_dato(elemento->dato);
     elemento->dato = dato_nuevo;
+    printf(ANSI_COLOR_BLUE"\tDEBUGG - Se actualizó la clave: %s \n"ANSI_COLOR_RESET "\n", elemento->clave);
     return true;
     
 }
@@ -135,9 +138,14 @@ bool hash_esta_vacio(const hash_t* hash){
     return false;
 }
 
+float hash_factor_carga(hash_t* hash){
+    float carga = (float)hash->cantidad / (float)hash->capacidad;
+    return carga;
+}
+
 bool hash_redimensionar(hash_t* hash){
-    
-    size_t tam_nuevo = hash->capacidad * CAP_MIN;
+    printf(ANSI_COLOR_YELLOW"\n\tDEBUG - REDIMENSIONO"ANSI_COLOR_RESET "\n");
+    size_t tam_nuevo = hash->capacidad * REDIM;
 
 
     hash_t* hash_nuevo = malloc(sizeof(hash_t));
@@ -202,31 +210,32 @@ size_t hash_cantidad(const hash_t *hash){
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){
     
-    float carga = (float)hash->cantidad / (float)hash->capacidad;
-    
+    printf(ANSI_COLOR_RED"\n\tDEBUG - GUARDAR recibió clave: %s"ANSI_COLOR_RESET "\n", clave);
     // NO TOCAR
-    if (carga >= 1){
+    if (hash_factor_carga(hash) >= 1){
         if(!hash_redimensionar(hash)) return false;
     }
     
     size_t indice = hashing(clave, hash->capacidad);
-    char* clave_cp =  strdup(clave);
-    
-    if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
+
+    if (hash->listas[indice] == NULL) hash->listas[indice] = lista_crear();    
     
     if (!lista_esta_vacia(hash->listas[indice])){
-        if(actualizar_elemento(hash, clave, dato)){
-            free(clave_cp);
+        if(actualizar_elemento(hash, clave, dato)) {
+            
             return true;
         }
     }
+
+    char* clave_cp =  strdup(clave);
     
     elemento_hash_t* elemento = elemento_crear(clave_cp, dato);
-    if (elemento == NULL) return false;
+    if (!elemento) return false;
+    
     
     lista_insertar_primero(hash->listas[indice], elemento);
     hash->cantidad++;
-   
+    printf(ANSI_COLOR_CYAN"\tDEBUG - Se guardó clave: %s \n"ANSI_COLOR_RESET "\n", clave);
     return true;
 }
 
@@ -250,7 +259,7 @@ bool hash_pertenece(const hash_t *hash, const char *clave){
 
 void *hash_borrar(hash_t *hash, const char *clave){
     
-    //if (hash_esta_vacio(hash)) return NULL; // Por si se vació
+    if (hash_esta_vacio(hash)) return NULL; // Por si se vació
 
     size_t indice = hashing(clave, hash->capacidad);
 

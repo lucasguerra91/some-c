@@ -14,6 +14,17 @@
 #include <unistd.h>  // For ssize_t in Linux.
 
 
+
+#define ANSI_COLOR_RED     "\x1b[1;31m"
+#define ANSI_COLOR_GREEN   "\x1b[1,32m"
+#define ANSI_COLOR_YELLOW  "\x1b[1;33m"
+#define ANSI_COLOR_BLUE    "\x1b[1;34m"
+#define ANSI_COLOR_MAGENTA "\x1b[1;35m"
+#define ANSI_COLOR_CYAN    "\x1b[1;36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
+
+
 /* ******************************************************************
  *                        PRUEBAS UNITARIAS
  * *****************************************************************/
@@ -231,13 +242,14 @@ static void prueba_hash_volumen(size_t largo, bool debug)
         valores[i] = malloc(sizeof(int));
         sprintf(claves[i], "%08d", i);
         *valores[i] = i;
+        printf("\n\tDEBUG - Mandó clave: %s  \n", claves[i]);
         ok = hash_guardar(hash, claves[i], valores[i]);
         if (!ok) break;
     }
     
     if (debug) print_test("\n\tPrueba hash almacenar muchos elementos", ok);
     if (debug) print_test("\tPrueba hash la cantidad de elementos es correcta", hash_cantidad(hash) == largo);
-    printf("\nDEBUGG - Cantidad es = %lu y el largo es = %lu", hash_cantidad(hash), largo);
+    printf("\nDEBUG - Cantidad es = %lu y el largo es = %lu", hash_cantidad(hash), largo);
     /* Verifica que devuelva los valores correctos */
     for (size_t i = 0; i < largo; i++) {
         ok = hash_pertenece(hash, claves[i]);
@@ -257,7 +269,7 @@ static void prueba_hash_volumen(size_t largo, bool debug)
 
     if (debug) print_test("\n\tPrueba hash borrar muchos elementos", ok);
     if (debug) print_test("\tPrueba hash la cantidad de elementos es 0", hash_cantidad(hash) == 0);
-    printf("\nDEBUGG - Cantidad es = %lu", hash_cantidad(hash));
+    printf("\nDEBUG - Cantidad es = %lu\n", hash_cantidad(hash));
 
     /* Destruye el hash y crea uno nuevo que sí libera */
     hash_destruir(hash);
@@ -276,7 +288,6 @@ static void prueba_hash_volumen(size_t largo, bool debug)
     hash_destruir(hash);
 
 }
-
 static ssize_t buscar(const char* clave, char* claves[], size_t largo)
 {
     for (size_t i = 0; i < largo; i++) {
@@ -401,7 +412,7 @@ static void prueba_hash_iterar_volumen(size_t largo)
     hash_iter_destruir(iter);
     hash_destruir(hash);
 }
- 
+
 /* ******************************************************************
  *                        FUNCIÓN PRINCIPAL
  * *****************************************************************/

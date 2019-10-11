@@ -76,7 +76,11 @@ void prueba_guardar_hash(){
     hash_destruir(hash);
 }
 
+
+
+
 void pruebas_hash_alumno(){
     prueba_crear_hash_vacio();
     prueba_guardar_hash();
+    
 }
