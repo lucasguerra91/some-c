@@ -67,46 +67,16 @@ size_t hashing(const char *clave, size_t tam){
              Primitivas del elemento
  * -----------------------------------------------------------------*/
 
-elemento_hash_t* elemento_crear(char *clave, void* dato){
-
+elemento_hash_t* elemento_crear(const char *clave, void* dato){
+    char* clave_cp =  strdup(clave);
     elemento_hash_t* elemento = malloc(sizeof(elemento_hash_t));
     if (elemento == NULL) return  NULL;
 
-    elemento->clave = clave;
+    elemento->clave = clave_cp;
     elemento->dato = dato;
-
+    // free(clave_cp); Esto rompe
     return elemento;
 
-}
-
-
-void* borrar_elemento(hash_t* hash, const char* clave){
-
-    size_t indice = hashing(clave, hash->capacidad);
-
-    lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
-    if (!iterador) return false;
-
-    elemento_hash_t* aux;
-    void * dato = NULL;
-    //printf("\nDEBUGG - clave de iter_actual es %s\n", aux->clave);
-
-    while (!lista_iter_al_final(iterador)){
-        aux = lista_iter_ver_actual(iterador);
-
-        if (strcmp(aux->clave, clave) == 0){
-            lista_iter_borrar(iterador);
-            hash->cantidad--;
-            dato = aux->dato;
-            break;
-        }
-        lista_iter_avanzar(iterador);
-
-    }
-
-    lista_iter_destruir(iterador);
-
-    return dato;
 }
 
 
@@ -119,29 +89,34 @@ elemento_hash_t* elemento_en_lista(const hash_t *hash,const char *clave){
     lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
     if (!iterador) return NULL;
 
-    //void* dato;
-
-    /* printf("indice es %lu", indice); */
     elemento_hash_t* aux = NULL;
-
 
     while (!lista_iter_al_final(iterador)){
 
         aux = lista_iter_ver_actual(iterador);
 
-        if (strcmp(aux->clave, clave) == 0){
-            //dato = aux->dato;
+        if (aux->clave == clave){
             break;
         }
         lista_iter_avanzar(iterador);
-
     }
 
     lista_iter_destruir(iterador);
 
-    //printf("\nDEBUGG - Saliendo de elemento en lista. El dato es: %s\n", (char *)aux->dato);
     return aux;
 }
+
+
+bool actualizar_elemento(hash_t* hash, const char* clave, void* dato_nuevo){
+    elemento_hash_t* elemento = elemento_en_lista(hash, clave);
+    if(elemento){    
+        if(hash->destruir_dato) hash->destruir_dato(elemento->dato);
+        elemento->dato = dato_nuevo;
+        return true;
+    }
+    return false;
+}
+
 
 /* -----------------------------------------------------------------
                 Funciones adicionales de la tabla de HASH
@@ -221,28 +196,27 @@ hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
 
 
 size_t hash_cantidad(const hash_t *hash){
-    if (!hash) return 0;
     return hash->cantidad;
 }
 
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 
-    if (hash_factor_carga(hash) >= 1){
+    /* if (hash_factor_carga(hash) >= 1){
         if (!hash_redimensionar(hash)) return false;
-    } 
-
+    }  */
+    
     size_t indice = hashing(clave, hash->capacidad);
 
     if (!hash->listas[indice]) hash->listas[indice] = lista_crear();
 
     if (!lista_esta_vacia(hash->listas[indice])){
-        borrar_elemento(hash, clave);
+        if(actualizar_elemento(hash, clave, dato)) return true;
     }
 
-    char* clave_cp =  strdup(clave);
-
-    elemento_hash_t* elemento = elemento_crear(clave_cp, dato);
+    
+    // char* clave_cp =  strdup(clave);
+    elemento_hash_t* elemento = elemento_crear(clave, dato);
     if (elemento == NULL) return false;
 
     lista_insertar_primero(hash->listas[indice], elemento);
@@ -261,9 +235,6 @@ void *hash_obtener(const hash_t *hash, const char *clave){
 }
 
 
-/* bool hash_pertenece(const hash_t *hash, const char *clave){
-    return elemento_en_lista(hash, clave);
-} */
 
 bool hash_pertenece(const hash_t *hash, const char *clave){
     if (hash_esta_vacio(hash)) return false;
@@ -271,12 +242,37 @@ bool hash_pertenece(const hash_t *hash, const char *clave){
     return elemento;
 }
 
+
 void *hash_borrar(hash_t *hash, const char *clave){
-    if (elemento_en_lista(hash, clave)){
-        return borrar_elemento(hash, clave);
+    
+    size_t indice = hashing(clave, hash->capacidad);
+
+    lista_iter_t* iterador = lista_iter_crear(hash->listas[indice]);
+    if (!iterador) return NULL;
+
+    elemento_hash_t* aux;
+    void * dato = NULL;
+    
+
+    while (!lista_iter_al_final(iterador)){
+        aux = lista_iter_ver_actual(iterador);
+
+        if (strcmp(aux->clave, clave) == 0){
+            lista_iter_borrar(iterador);
+            hash->cantidad--;
+            dato = aux->dato;
+            break;
+        }
+        lista_iter_avanzar(iterador);
+
     }
-    return NULL;
+
+    lista_iter_destruir(iterador);
+
+    return dato;
+
 }
+
 
 void hash_destruir(hash_t *hash){
     for (size_t i = 0; i < hash->capacidad; i++){
